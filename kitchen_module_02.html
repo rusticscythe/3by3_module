@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameFAST — Kitchen Module 02</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@200;300;400;500&display=swap');
+
+  :root {
+    --bg: #F7F5F2;
+    --paper: #FDFCFB;
+    --ink: #1A1A1A;
+    --ink-mid: #555550;
+    --ink-light: #9A9990;
+    --wall: #3A3A36;
+    --join: #B5895A;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--ink);
+    padding: 40px;
+  }
+  .page-wrap { max-width: 1400px; margin: 0 auto; }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 32px;
+  }
+  .header-title h1 { font-size: 36px; font-weight: 200; letter-spacing: -0.01em; }
+  .header-title p {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+    color: var(--ink-light); text-transform: uppercase; margin-top: 4px;
+  }
+  .header-meta {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+    color: var(--ink-mid); text-align: right; line-height: 1.8; text-transform: uppercase;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .panel {
+    background: var(--paper);
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 28px;
+  }
+  .panel-label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-light);
+    margin-bottom: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .scale-badge {
+    background: var(--ink); color: white;
+    padding: 3px 8px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  }
+
+  .specs-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; margin-top: 32px;
+  }
+  .spec-block {
+    background: var(--paper); border: 1px solid rgba(0,0,0,0.1); padding: 20px 24px;
+  }
+  .spec-block h3 {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-light);
+    margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .spec-row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0; font-size: 12px; border-bottom: 1px dotted rgba(0,0,0,0.06);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-key { color: var(--ink-mid); font-weight: 300; }
+  .spec-val { font-family: var(--mono); font-size: 11px; font-weight: 500; }
+
+  .legend {
+    background: var(--paper); border: 1px solid rgba(0,0,0,0.1);
+    padding: 20px 24px; margin-top: 16px; grid-column: 1 / -1;
+  }
+  .legend h3 {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-light);
+    margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 16px 32px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--ink-mid); }
+  .legend-swatch { width: 18px; height: 12px; border: 1px solid rgba(0,0,0,0.15); flex-shrink: 0; }
+
+  .footer {
+    margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.12);
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+    color: var(--ink-light); text-transform: uppercase;
+  }
+  .chip {
+    border: 1px solid rgba(0,0,0,0.15); padding: 3px 10px;
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+    color: var(--ink-mid); text-transform: uppercase; display: inline-block; margin: 2px;
+  }
+  .chip.dark { background: var(--ink); color: white; border-color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2 L26 8 L26 20 L14 26 L2 20 L2 8 Z" stroke="#1A1A1A" stroke-width="1.5" fill="none"/>
+        <path d="M14 2 L14 26 M2 8 L26 20 M26 8 L2 20" stroke="#1A1A1A" stroke-width="0.75" opacity="0.4"/>
+      </svg>
+      <div class="header-title">
+        <h1>Kitchen Module</h1>
+        <p>FrameFAST — Plug &amp; Play Series</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      Module No. 02 / 03<br>
+      Floor Plan + Isometric View<br>
+      Style: Japandi Minimal<br>
+      Rev.01 — Feb 2026
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- ══════════════════════════════════════════════
+         FLOOR PLAN
+    ══════════════════════════════════════════════ -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>Floor Plan — Top View / ผัง Top-View ขนาด 3.0 × 3.0 เมตร</span>
+        <span class="scale-badge">SCALE 1:50</span>
+      </div>
+
+      <svg viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;">
+        <defs>
+          <pattern id="grid2" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0 L0 0 0 20" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="0.5"/>
+          </pattern>
+          <!-- Wood grain for counter -->
+          <pattern id="wood" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="#C8B89A"/>
+            <line x1="0" y1="2" x2="8" y2="2" stroke="#B8A888" stroke-width="0.5" opacity="0.6"/>
+            <line x1="0" y1="5" x2="8" y2="5" stroke="#D0C0A0" stroke-width="0.3" opacity="0.5"/>
+          </pattern>
+          <!-- Tile grid for floor -->
+          <pattern id="tile60" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#EAE4DA"/>
+            <rect width="20" height="20" fill="none" stroke="rgba(140,130,115,0.25)" stroke-width="0.6"/>
+          </pattern>
+        </defs>
+
+        <!-- BG -->
+        <rect width="440" height="440" fill="url(#grid2)"/>
+
+        <!-- ── ROOM BOUNDARY ──
+             Interior: 300×300 mapped to pixel 300×300
+             Origin at (55,55), end at (355,355)
+             Scale: 1px = 1cm, 300px = 3m  -->
+
+        <!-- Outer wall box -->
+        <rect x="40" y="40" width="330" height="330" fill="none" stroke="#3A3A36" stroke-width="1.5"/>
+
+        <!-- Wall fills (15px = 15cm wall) -->
+        <rect x="40" y="40"  width="330" height="15" fill="#3A3A36"/>  <!-- top -->
+        <rect x="40" y="355" width="330" height="15" fill="#3A3A36"/>  <!-- bottom -->
+        <rect x="40" y="40"  width="15"  height="330" fill="#3A3A36"/> <!-- left -->
+        <rect x="355" y="40" width="15"  height="330" fill="#3A3A36"/> <!-- right -->
+
+        <!-- Interior floor -->
+        <rect x="55" y="55" width="300" height="300" fill="url(#tile60)"/>
+
+        <!-- ── L-SHAPE COUNTER LAYOUT ──
+             Back wall counter (along top, y=55..115, full 300 width)
+             Left wall counter (along left, x=55..115, y=55..220)
+        -->
+
+        <!-- BACK COUNTER (top wall) depth 60cm = 60px -->
+        <rect x="55"  y="55"  width="300" height="60" fill="url(#wood)" stroke="#9A8870" stroke-width="1"/>
+        <!-- Counter top sheen line -->
+        <rect x="55"  y="55"  width="300" height="3" fill="rgba(255,255,255,0.3)"/>
+        <!-- Counter edge front -->
+        <rect x="55"  y="112" width="300" height="3" fill="#8A7860" opacity="0.5"/>
+
+        <!-- LEFT COUNTER (side wall) depth 60cm, length 165cm = 165px (from y=55 to y=220) -->
+        <rect x="55" y="55" width="60" height="165" fill="url(#wood)" stroke="#9A8870" stroke-width="1"/>
+        <!-- Right edge sheen -->
+        <rect x="112" y="55" width="3" height="165" fill="#8A7860" opacity="0.5"/>
+
+        <!-- ── APPLIANCES ON BACK COUNTER ── -->
+
+        <!-- HOB 2-burner: 70×38cm → 70×38px centered on back counter left side -->
+        <!-- Position: x=70..140, y=60..98 -->
+        <rect x="70" y="62" width="70" height="38" fill="#D0C8BC" stroke="#8A8070" stroke-width="1" rx="2"/>
+        <!-- Burners -->
+        <circle cx="90"  cy="81" r="11" fill="#B8B0A4" stroke="#9A9080" stroke-width="0.75"/>
+        <circle cx="90"  cy="81" r="7"  fill="#C8C0B4"/>
+        <circle cx="90"  cy="81" r="3"  fill="#3A3A36"/>
+        <circle cx="125" cy="81" r="11" fill="#B8B0A4" stroke="#9A9080" stroke-width="0.75"/>
+        <circle cx="125" cy="81" r="7"  fill="#C8C0B4"/>
+        <circle cx="125" cy="81" r="3"  fill="#3A3A36"/>
+        <!-- Knobs row at front of hob -->
+        <circle cx="78"  cy="97" r="3" fill="#3A3A36"/>
+        <circle cx="90"  cy="97" r="3" fill="#3A3A36"/>
+        <circle cx="102" cy="97" r="3" fill="#3A3A36"/>
+        <circle cx="114" cy="97" r="3" fill="#3A3A36"/>
+
+        <!-- SINK 2-bowl: 75×45cm → 75×45px on back counter right side -->
+        <!-- Position: x=195..270, y=58..103 -->
+        <rect x="200" y="60" width="75" height="45" fill="#C8C4BC" stroke="#9A9080" stroke-width="0.75" rx="2"/>
+        <!-- Bowl 1 -->
+        <rect x="205" y="63" width="32" height="36" fill="#B8B4AC" stroke="#9A9080" stroke-width="0.6" rx="2"/>
+        <!-- Bowl 2 -->
+        <rect x="240" y="63" width="30" height="36" fill="#B8B4AC" stroke="#9A9080" stroke-width="0.6" rx="2"/>
+        <!-- Drain circles -->
+        <circle cx="221" cy="81" r="4" fill="#9A9080" stroke="#8A8070" stroke-width="0.5"/>
+        <circle cx="255" cy="81" r="4" fill="#9A9080" stroke="#8A8070" stroke-width="0.5"/>
+        <!-- Faucet (matte black) -->
+        <rect x="233" y="60" width="4" height="10" fill="#2A2A28" rx="1"/>
+        <rect x="228" y="60" width="14" height="3" fill="#2A2A28" rx="1"/>
+
+        <!-- PREP ZONE (empty counter space, right of sink) -->
+        <rect x="280" y="60" width="68" height="45" fill="#D8D0C4" stroke="#9A9080" stroke-width="0.5" opacity="0.5"/>
+        <text x="314" y="86" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">PREP</text>
+
+        <!-- UPPER CABINETS on back wall (above counter, shown as dashed outline) -->
+        <rect x="55" y="55" width="300" height="20" fill="none" stroke="#9A9080" stroke-width="0.6" stroke-dasharray="4,2"/>
+
+        <!-- ── LEFT COUNTER: APPLIANCES ── -->
+
+        <!-- Refrigerator 60×65cm at top of left counter -->
+        <rect x="57" y="57" width="55" height="60" fill="#E0DAD2" stroke="#9A9080" stroke-width="1" rx="2"/>
+        <!-- Fridge door line -->
+        <line x1="84" y1="57" x2="84" y2="117" stroke="#9A9080" stroke-width="0.5"/>
+        <!-- Handle -->
+        <rect x="78" y="68" width="3" height="30" fill="#3A3A36" rx="1"/>
+        <text x="84" y="125" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">FRIDGE</text>
+
+        <!-- Counter continuation below fridge -->
+        <rect x="57" y="120" width="55" height="90" fill="url(#wood)" stroke="#9A8870" stroke-width="1" opacity="0.7"/>
+
+        <!-- ── UPPER CABINETS LEFT WALL (dashed) ── -->
+        <rect x="55" y="55" width="20" height="165" fill="none" stroke="#9A9080" stroke-width="0.6" stroke-dasharray="4,2"/>
+
+        <!-- ── FOLD-DOWN TABLE ── -->
+        <!-- Table surface: 80×60cm, wall-mounted on left, folded out -->
+        <!-- Position: x=140..220, y=240..300 -->
+        <rect x="145" y="225" width="80" height="60" fill="#DDD5C8" stroke="#9A8870" stroke-width="1" rx="1"/>
+        <!-- Wall bracket lines -->
+        <line x1="145" y1="225" x2="145" y2="285" stroke="#3A3A36" stroke-width="1.5"/>
+        <!-- Table legs (folded down) -->
+        <line x1="160" y1="285" x2="158" y2="305" stroke="#9A8870" stroke-width="1.5"/>
+        <line x1="210" y1="285" x2="212" y2="305" stroke="#9A8870" stroke-width="1.5"/>
+        <!-- Table label -->
+        <text x="185" y="258" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#7A7060">FOLD TABLE</text>
+        <text x="185" y="268" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">80 × 60 cm</text>
+
+        <!-- 2 STOOLS -->
+        <circle cx="168" cy="315" r="14" fill="#C8BFB0" stroke="#9A8870" stroke-width="0.8"/>
+        <circle cx="168" cy="315" r="10" fill="#D8D0C4"/>
+        <circle cx="205" cy="315" r="14" fill="#C8BFB0" stroke="#9A8870" stroke-width="0.8"/>
+        <circle cx="205" cy="315" r="10" fill="#D8D0C4"/>
+        <text x="186" y="342" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">STOOLS × 2</text>
+
+        <!-- ── DOOR (bottom wall, right side) ── -->
+        <!-- Gap in bottom wall: x=255..340 (85px = 80cm clear) -->
+        <rect x="255" y="355" width="88" height="15" fill="#EAE4DA"/> <!-- gap -->
+        <!-- Door swing arc -->
+        <path d="M 255,355 A 88,88 0 0,0 255,267" fill="none" stroke="#9A9990" stroke-width="0.75" stroke-dasharray="3,2"/>
+        <!-- Door panel -->
+        <rect x="252" y="267" width="3" height="90" fill="#3A3A36"/>
+        <rect x="340" y="350" width="3" height="18" fill="#3A3A36"/>
+        <text x="296" y="393" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#3A3A36" letter-spacing="0.1em">DOOR 80cm (OUTSWING)</text>
+
+        <!-- WINDOW on right wall (for ventilation) -->
+        <rect x="355" y="160" width="15" height="80" fill="#C8E0DC" stroke="#8BBCAF" stroke-width="1"/>
+        <line x1="355" y1="200" x2="370" y2="200" stroke="#8BBCAF" stroke-width="0.6"/>
+        <text x="390" y="204" font-family="DM Mono, monospace" font-size="7.5" fill="#5A8A80">WINDOW</text>
+        <text x="383" y="213" font-family="DM Mono, monospace" font-size="7" fill="#8BBCAF">80×60cm</text>
+
+        <!-- ── JOIN POINT left side ── -->
+        <rect x="33" y="145" width="7" height="80" fill="#B5895A" opacity="0.85" rx="1"/>
+        <text x="29" y="200" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#B5895A"
+              transform="rotate(-90 29 185)" letter-spacing="0.08em">JOIN POINT</text>
+
+        <!-- ── LABELS ── -->
+        <text x="105" y="84" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#3A3A36">HOB 2 BURNER</text>
+        <text x="105" y="92" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">70 × 38 cm</text>
+
+        <text x="237" y="118" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#3A3A36">SINK 2 BOWL</text>
+        <text x="237" y="126" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">75 × 45 cm</text>
+
+        <!-- Backsplash label -->
+        <text x="200" y="50" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9990" letter-spacing="0.06em">── BACKSPLASH HEXAGON TILE ──</text>
+
+        <!-- ── DIMENSION LINES ── -->
+        <line x1="40" y1="405" x2="370" y2="405" stroke="#555550" stroke-width="0.75"/>
+        <line x1="40" y1="400" x2="40"  y2="410" stroke="#555550" stroke-width="0.75"/>
+        <line x1="370" y1="400" x2="370" y2="410" stroke="#555550" stroke-width="0.75"/>
+        <text x="205" y="420" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#555550" letter-spacing="0.08em">3,000 mm</text>
+
+        <line x1="408" y1="40"  x2="408" y2="370" stroke="#555550" stroke-width="0.75"/>
+        <line x1="403" y1="40"  x2="413" y2="40"  stroke="#555550" stroke-width="0.75"/>
+        <line x1="403" y1="370" x2="413" y2="370" stroke="#555550" stroke-width="0.75"/>
+        <text x="430" y="210" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#555550"
+              transform="rotate(90 430 205)" letter-spacing="0.08em">3,000 mm</text>
+
+        <!-- Counter depth dims -->
+        <line x1="55" y1="52" x2="355" y2="52" stroke="#555550" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+        <text x="355" y="50" text-anchor="end" font-family="DM Mono, monospace" font-size="6.5" fill="#9A9990">counter depth 60cm</text>
+
+        <!-- North arrow -->
+        <g transform="translate(385,375)">
+          <circle cx="0" cy="0" r="12" fill="none" stroke="#9A9990" stroke-width="0.75"/>
+          <path d="M0,-9 L4,4 L0,1 L-4,4 Z" fill="#3A3A36"/>
+          <text x="0" y="-12" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#3A3A36">N</text>
+          <text x="0" y="7" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#555550">S</text>
+        </g>
+
+        <!-- Zone label -->
+        <text x="260" y="220" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#9A9080" opacity="0.5" letter-spacing="0.12em">KITCHEN ZONE</text>
+        <text x="260" y="232" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#9A9080" opacity="0.5">~9 m²</text>
+      </svg>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         ISOMETRIC VIEW — strict grid math
+    ══════════════════════════════════════════════ -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>Isometric View — 3D Visualization</span>
+        <span class="scale-badge">ISO VIEW</span>
+      </div>
+
+      <!--
+        ISO MATH:
+        Tile unit = 1m = 30px in iso
+        isoX(col,row) = cx + (col - row) * TW   (TW = tile half-width = 46px)
+        isoY(col,row) = cy + (col + row) * TH   (TH = tile half-height = 23px)
+        Wall height H = 2.5m => 75px in iso
+
+        Room: 3×3 grid (col 0..3, row 0..3)
+        Origin (cx,cy) = left-most point of floor = (220, 310)
+        
+        Floor corners:
+          (0,0) = cx + 0 , cy + 0           = (220, 310)  → LEFT  point
+          (3,0) = cx + 3*46, cy + 3*23      = (358, 379)  → FRONT-LEFT
+          (3,3) = cx + 0  , cy + 6*23       = (220, 448)  → NOT VISIBLE
+          (0,3) = cx - 3*46, cy + 3*23      = ( 82, 379)  → FRONT-RIGHT
+          (0,0) = top point
+          (3,0) = right
+          (0,3) = left  (viewer front-left)
+          
+        Let me re-define with viewer looking from front-bottom:
+        
+        Standard iso: 
+          X axis goes right-down  (+x = col * (TW, TH))
+          Z axis goes left-down   (+z = row * (-TW, TH))
+          Y axis goes up          (+y = (0, -H))
+        
+        TW = 50, TH = 25  (2:1 ratio)
+        
+        isoX(x,z) = originX + x*TW - z*TW
+        isoY(x,z) = originY + x*TH + z*TH
+        
+        origin = bottom vertex of floor = (220, 380)
+        Room: x=0..3m, z=0..3m  (x=right, z=back)
+        H = 2.5m => 83px
+        
+        Key floor points (y=0, ground):
+        P_front  = (x=0,z=0) = (220, 380)   ← viewer closest
+        P_right  = (x=3,z=0) = (220+150, 380+75) = (370, 455)
+        P_back   = (x=3,z=3) = (220+150-150, 380+75+75) = (220, 530) ← too low
+        P_left   = (x=0,z=3) = (220-150, 380+75) = (70, 455)
+        
+        Too big, scale down: TW=40, TH=20, H=65px
+        origin = (215, 345)
+        
+        P_front = (215, 345)
+        P_right = (215+120, 345+60) = (335, 405)
+        P_back  = (215, 345+120) = (215, 465)  
+        P_left  = (215-120, 345+60) = (95, 405)
+        
+        ceiling (y=H=65):
+        C_front = (215, 345-65) = (215, 280)
+        C_right = (335, 405-65) = (335, 340)
+        C_back  = (215, 465-65) = (215, 400)
+        C_left  = (95, 405-65)  = (95, 340)
+        
+        Visible faces: 
+        - Floor: front, right, left visible → all 4 floor pts
+        - Left wall (x=0): P_front,P_left,C_left,C_front  → LEFT face
+        - Right wall (z=0): P_front,P_right,C_right,C_front → RIGHT face (this is front-right face with door)
+        - Back wall (x=3): P_right,P_back,C_back,C_right  (partially visible)
+        - Back wall (z=3): P_left,P_back,C_back,C_left    (partially visible, has window)
+        
+        We'll show LEFT wall and BACK-Z wall as main visible faces
+        
+        Let me simplify: show room from front-left corner
+        Left face (viewer faces this) = z=0 plane
+        Right face (viewer faces this) = x=0 plane
+        
+        Actually most natural: 
+        - Viewer stands at front-left
+        - We see: back-right wall face + back-top wall face + floor
+        - Left wall is at x=0, runs from z=0 to z=3 → RIGHT face in our view
+        - Back wall at z=3, runs from x=0 to x=3 → LEFT face in our view
+        
+        Let's just do it clean:
+        TW=42, TH=21, H=70
+        originX=215, originY=330
+        
+        fn iso(x,z) = (originX + x*TW - z*TW,  originY + x*TH + z*TH)
+        
+        Floor: (0,0)(3,0)(3,3)(0,3)
+        = (215,330), (341,393), (215,456), (89,393)
+        
+        Walls up by H=70:
+        Wall at z=0 (right face seen by viewer):  (0,0)(3,0) raised
+        = (215,330)(341,393)(341,323)(215,260)
+        
+        Wall at x=0 (left face seen by viewer): (0,0)(0,3) raised
+        = (215,330)(89,393)(89,323)(215,260)
+        
+        VISIBLE: Right face and Left face both visible. Good.
+        
+        In kitchen:
+        - Left face (z=0): has door in front-right corner
+        - Right face (x=0): has window, this is the right wall
+        - Back corner (x=3, z=3): back of room
+        
+        L-counter along:
+        - z=3 back wall (counter along back)
+        - x=3 right wall (counter along right side)  
+        
+        Wait, let me reconsider layout orientation for iso view.
+        The L-counter is along top+left in floor plan.
+        In iso: put counter along back wall and left wall.
+        
+        So in iso coords:
+        Back wall = z=3 (far from viewer) — counter along here: x from 0 to 3
+        Left-back wall = x=3 (far right in iso) — counter along here: z from 0 to ~2.2
+        
+        Door: on z=0 front face, right side (x=1.5 to x=2.5 approx)
+        Window: on x=0 left face (but that's the visible near-left face)
+        
+        ──────────────────────────────────────────
+        Final simplified coordinates (TW=42,TH=21,H=70, origin 215,330):
+        
+        iso(x,z) => px:
+          iso(0,0) = (215, 330)  P00 — front bottom
+          iso(1,0) = (257, 351)
+          iso(2,0) = (299, 372)
+          iso(3,0) = (341, 393)  P30 — right bottom  
+          iso(0,1) = (173, 351)
+          iso(0,2) = (131, 372)
+          iso(0,3) = ( 89, 393)  P03 — left bottom
+          iso(1,1) = (215, 372)
+          iso(2,2) = (215, 414)
+          iso(3,3) = (215, 456)  P33 — back bottom
+          iso(1,3) = (131, 414)
+          iso(3,1) = (299, 414)
+          iso(2,1) = (257, 393)  (on front-right face)
+          iso(1,2) = (173, 393)
+          iso(2,3) = (173, 435)
+          iso(3,2) = (257, 435)
+          
+        ceiling = subtract H=70 from y:
+          C00=(215,260), C30=(341,323), C03=(89,323), C33=(215,386)
+          C10=(257,281), C20=(299,302)
+          C01=(173,281), C02=(131,302)
+          C11=(215,302), C13=(131,344), C31=(299,344), C22=(215,344)
+          C12=(173,323), C21=(257,323)
+          C23=(173,365), C32=(257,365)
+      -->
+
+      <svg viewBox="0 0 460 490" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block; background: linear-gradient(155deg,#F2EFE9 0%,#E8E2D8 100%);">
+        <defs>
+          <linearGradient id="floorK" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E0D8CC"/>
+            <stop offset="100%" stop-color="#CCC4B4"/>
+          </linearGradient>
+          <linearGradient id="wallBack" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F0ECE5"/>
+            <stop offset="100%" stop-color="#DDD8D0"/>
+          </linearGradient>
+          <linearGradient id="wallRight" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#E4E0D8"/>
+            <stop offset="100%" stop-color="#D4D0C8"/>
+          </linearGradient>
+          <linearGradient id="counterTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D8D0C0"/>
+            <stop offset="100%" stop-color="#C8C0B0"/>
+          </linearGradient>
+          <linearGradient id="counterFaceBack" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#C0B090"/>
+            <stop offset="100%" stop-color="#A89878"/>
+          </linearGradient>
+          <linearGradient id="counterFaceSide" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#B0A888"/>
+            <stop offset="100%" stop-color="#988868"/>
+          </linearGradient>
+          <linearGradient id="backsplash" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E8E4DC"/>
+            <stop offset="100%" stop-color="#D8D4CC"/>
+          </linearGradient>
+          <linearGradient id="ceilK" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F5F2EE" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#EAE6E0" stop-opacity="0.5"/>
+          </linearGradient>
+          <linearGradient id="quartzTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#DEDAD4"/>
+            <stop offset="100%" stop-color="#CEC8C0"/>
+          </linearGradient>
+          <linearGradient id="shadowFloor" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="rgba(0,0,0,0)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.12)"/>
+          </linearGradient>
+          <!-- Hex tile pattern for backsplash -->
+          <pattern id="hexPat" x="0" y="0" width="14" height="16" patternUnits="userSpaceOnUse">
+            <polygon points="7,0 14,4 14,12 7,16 0,12 0,4" fill="#E8E4DC" stroke="#C8C4BC" stroke-width="0.5"/>
+          </pattern>
+          <!-- Floor tile pattern iso skewed -->
+          <pattern id="isoTile" x="0" y="0" width="42" height="42" patternUnits="userSpaceOnUse"
+                   patternTransform="skewX(-26.5) scale(1,0.5)">
+            <rect width="42" height="42" fill="#DDD8CE"/>
+            <rect width="42" height="42" fill="none" stroke="rgba(160,152,138,0.3)" stroke-width="0.7"/>
+          </pattern>
+        </defs>
+
+        <!-- Ground shadow -->
+        <ellipse cx="215" cy="465" rx="140" ry="14" fill="rgba(0,0,0,0.07)"/>
+
+        <!-- ══════════════════
+             LAYER 1: FLOOR
+        ══════════════════ -->
+        <!-- Floor diamond: P00,P30,P33,P03 -->
+        <polygon points="215,330 341,393 215,456 89,393"
+                 fill="url(#floorK)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Floor tile grid lines (iso projected) -->
+        <!-- Lines parallel to x-axis (z=1,2) -->
+        <line x1="173,351" y1="173,351" x2="299,414" y2="299,414"
+              stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+        <!-- Proper iso tile lines: z=1 row -->
+        <line x1="173" y1="351" x2="299" y2="414" stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+        <line x1="131" y1="372" x2="257" y2="435" stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+        <!-- x=1,2 cols -->
+        <line x1="257" y1="351" x2="131" y2="414" stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+        <line x1="299" y1="372" x2="173" y2="435" stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+
+        <!-- ══════════════════
+             LAYER 2: WALLS (back faces, drawn bottom to top so they occlude floor)
+        ══════════════════ -->
+
+        <!-- BACK-Z wall (z=3, far from viewer) — left face in iso view
+             Runs from (0,3) to (3,3) to ceiling
+             = P03(89,393) → P33(215,456) → C33(215,386) → C03(89,323)  -->
+        <polygon points="89,393 215,456 215,386 89,323"
+                 fill="url(#wallBack)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- BACK-X wall (x=3, far right) — right face in iso view
+             Runs from (3,0) to (3,3) to ceiling
+             = P30(341,393) → P33(215,456) → C33(215,386) → C30(341,323)  -->
+        <polygon points="341,393 215,456 215,386 341,323"
+                 fill="url(#wallRight)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Wall tile grid on back-z wall (hex style subtle) -->
+        <polygon points="89,393 215,456 215,386 89,323"
+                 fill="none" stroke="none"/>
+        <!-- Grid lines on back-z wall -->
+        <g opacity="0.15" stroke="#8A8070" stroke-width="0.5">
+          <!-- Horizontal bands -->
+          <line x1="89" y1="370" x2="215" y2="433"/>
+          <line x1="89" y1="347" x2="215" y2="410"/>
+          <line x1="89" y1="347" x2="215" y2="386"/>
+          <!-- Vertical bands -->
+          <line x1="131" y1="414" x2="131" y2="344"/>
+          <line x1="173" y1="435" x2="173" y2="365"/>
+        </g>
+
+        <!-- ══════════════════
+             LAYER 3: BACKSPLASH (hex tile strip on back walls above counter)
+             Counter height = 90cm = 3/2.5 * 70 = ~25px
+             Backsplash height = 60cm → ~17px
+        ══════════════════ -->
+        <!-- Counter height in iso = 90/250 * 70 ≈ 25 iso-px
+             z=3 wall: counter runs from (0,3) to (3,3) so x from 0→3
+             Counter top at y=floor_y - 25:
+             At x=0,z=3: (89, 393-25) = (89,368)
+             At x=3,z=3: (215, 456-25) = (215,431) -->
+        <!-- Backsplash strip on back-z wall: y from counter-top to counter-top+17px going up -->
+        <polygon points="89,368 215,431 215,414 89,351"
+                 fill="url(#backsplash)" stroke="#C0BCBC" stroke-width="0.5" opacity="0.9"/>
+        <!-- Hex pattern overlay on backsplash-z -->
+        <polygon points="89,368 215,431 215,414 89,351"
+                 fill="url(#hexPat)" opacity="0.4"/>
+
+        <!-- Backsplash strip on back-x wall: x goes from 3,0 to 3,3
+             At x=3,z=0: (341,393-25)=(341,368)
+             At x=3,z=3: (215,456-25)=(215,431) -->
+        <polygon points="341,368 215,431 215,414 341,351"
+                 fill="url(#backsplash)" stroke="#C0BCBC" stroke-width="0.5" opacity="0.85"/>
+        <polygon points="341,368 215,431 215,414 341,351"
+                 fill="url(#hexPat)" opacity="0.35"/>
+
+        <!-- ══════════════════
+             LAYER 4: COUNTERTOPS (L-shape)
+             Counter along z=3 back wall, x from 0 to 3, depth 0.6m
+             Counter top face: from z=3 to z=2.4 (depth 0.6), x=0 to x=3
+             
+             iso points for z=2.4 at H=90cm:
+             (0,2.4) = (215 - 2.4*42, 330 + 2.4*21) = (215-100.8, 330+50.4) = (114,380)
+             (3,2.4) = (215 + 3*42 - 2.4*42, 330 + 3*21 + 2.4*21) = (215+25.2, 330+113.4) = (240,443)
+             
+             Counter TOP face (at h=90cm → subtract 25px from y):
+             (0,3): (89, 393-25) = (89, 368)
+             (3,3): (215, 456-25) = (215, 431)
+             (3,2.4): (240, 443-25) = (240, 418)
+             (0,2.4): (114, 380-25) = (114, 355)
+        ══════════════════ -->
+        <!-- Back counter top (along z=3) -->
+        <polygon points="89,368 215,431 240,418 114,355"
+                 fill="url(#quartzTop)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Counter top sheen -->
+        <polygon points="89,368 215,431 240,418 114,355"
+                 fill="rgba(255,255,255,0.1)" stroke="none"/>
+
+        <!-- Counter front face (along z=3, face toward viewer, from top to floor)
+             Top: (0,2.4)=114,355 → (3,2.4)=240,418
+             Bottom: (0,3)floor=89,393? No — front face at z=2.4 from floor to counter-top
+             
+             Actually the counter face is the z=2.4 surface (facing viewer):
+             Top line: (0,2.4,h90)=(114,355) to (3,2.4,h90)=(240,418)
+             Bottom line: (0,2.4,0)=(114,380) to (3,2.4,0)=(240,443)
+             Wait iso(0,2.4) = (215 - 2.4*42, 330 + 2.4*21) = (114.2, 380.4) → (114,380)
+             iso(3,2.4) = (215 + 3*42 - 2.4*42, 330 + 3*21 + 2.4*21) = (240.2, 443.4) → (240,443)
+             
+             Front face at z=2.4: top=(114,355) (3,2.4 top)=(240,418) bottom=(240,443) bottom=(114,380)
+        -->
+        <polygon points="114,355 240,418 240,443 114,380"
+                 fill="url(#counterFaceBack)" stroke="#9A8060" stroke-width="0.7"/>
+        <!-- Wood grain lines on face -->
+        <g stroke="#A89868" stroke-width="0.5" opacity="0.4">
+          <line x1="114" y1="362" x2="240" y2="425"/>
+          <line x1="114" y1="368" x2="240" y2="431"/>
+          <line x1="114" y1="374" x2="240" y2="437"/>
+        </g>
+
+        <!-- Side counter (along x=3 right wall), z from 0 to 2.2
+             iso(3,0) = (341,393) — at ground
+             iso(3,2.2) = (215+3*42-2.2*42, 330+3*21+2.2*21) = (215+33.6, 330+109.2) = (249,439)
+             
+             Counter top face (x=3, side): x=3, z=0..2.2, raised to h=90
+             (3,0,h90): (341, 393-25) = (341,368)
+             (3,2.2,h90): (249, 439-25) = (249,414)
+             (2.4,2.2,h90): iso(2.4,2.2)=(215+(2.4-2.2)*42, 330+(2.4+2.2)*21)=(215+8.4,330+96.6)=(223,427) -25 = (223,402)
+             (2.4,0,h90): iso(2.4,0)=(215+2.4*42,330+2.4*21)=(215+100.8,330+50.4)=(316,380) -25 = (316,355)
+             
+             Actually let me just define the side counter top:
+             It's the face of x=3 (right wall) counter, depth 0.6 into room (so x goes 3→2.4)
+             Top face: (2.4,0) to (3,0) to (3,2.2) to (2.4,2.2) all at h=90
+        -->
+        <!-- Side counter top -->
+        <polygon points="316,355 341,368 249,414 223,402"
+                 fill="url(#quartzTop)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Side counter front face (x=2.4 surface, facing viewer-left)
+             Top: (2.4,0,h90)=(316,355) to (2.4,2.2,h90)=(223,402)
+             Bottom: (2.4,0,0)=(316,380) to (2.4,2.2,0)=(223,427)
+        -->
+        <polygon points="316,355 223,402 223,427 316,380"
+                 fill="url(#counterFaceSide)" stroke="#9A8060" stroke-width="0.7"/>
+        <!-- Wood grain lines -->
+        <g stroke="#A89868" stroke-width="0.5" opacity="0.35">
+          <line x1="316" y1="362" x2="223" y2="409"/>
+          <line x1="316" y1="370" x2="223" y2="417"/>
+        </g>
+
+        <!-- Counter join piece at corner (x=2.4..3, z=2.2..3 top face) -->
+        <polygon points="240,418 249,414 223,402 215,406"
+                 fill="url(#quartzTop)" stroke="#9A9080" stroke-width="0.7"/>
+
+        <!-- ══════════════════
+             LAYER 5: APPLIANCES ON COUNTERS
+             All at counter height (y offset -25 from floor iso)
+        ══════════════════ -->
+
+        <!-- HOB on back counter, x=0.3..1.0 (from left)
+             iso(0.3,3,h90) = (215+0.3*42-3*42,330+0.3*21+3*21)-25 = (215-105.6,330+69.3)-25 = (109,374)
+             iso(1.0,3,h90) = (215+42-126,330+21+63)-25 = (131,389)
+             iso(1.0,2.4,h90) = (240... let me compute):
+             iso(x,z) baseline: x=1,z=2.4 → (215+42-100.8, 330+21+50.4) = (156,401) -25 = (156,376)
+             iso(0.3,2.4,h90) = (215+12.6-100.8, 330+6.3+50.4)-25 = (127,362)
+        -->
+        <!-- Hob top face -->
+        <polygon points="109,349 131,361 156,376 134,364"
+                 fill="#C8C0B8" stroke="#8A8070" stroke-width="0.8"/>
+        <!-- Burners (circles on iso plane, approximated as ellipses) -->
+        <ellipse cx="120" cy="357" rx="7" ry="4" fill="#A8A090" stroke="#9A8878" stroke-width="0.5"/>
+        <ellipse cx="120" cy="357" rx="4" ry="2.5" fill="#B8B0A8"/>
+        <ellipse cx="145" cy="370" rx="7" ry="4" fill="#A8A090" stroke="#9A8878" stroke-width="0.5"/>
+        <ellipse cx="145" cy="370" rx="4" ry="2.5" fill="#B8B0A8"/>
+        <!-- Hob front face -->
+        <polygon points="109,349 134,364 134,377 109,362"
+                 fill="#B8B0A0" stroke="#8A8070" stroke-width="0.6"/>
+
+        <!-- SINK on back counter, x=1.5..2.2
+             iso(1.5,3,h90)=(215+63-126,330+31.5+63)-25=(152,399)
+             iso(2.2,3,h90)=(215+92.4-126,330+46.2+63)-25=(181,414)
+             iso(2.2,2.4,h90)=(215+92.4-100.8,330+46.2+50.4)-25=(207,402)
+             iso(1.5,2.4,h90)=(215+63-100.8,330+31.5+50.4)-25=(177,387)
+        -->
+        <!-- Sink top face -->
+        <polygon points="152,374 181,389 207,377 177,362"
+                 fill="#C0BCBA" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Sink bowls (two, drawn as inset ellipses) -->
+        <ellipse cx="162" cy="378" rx="7" ry="4" fill="#A8A4A0" stroke="#9A9080" stroke-width="0.5"/>
+        <ellipse cx="193" cy="385" rx="6" ry="3.5" fill="#A8A4A0" stroke="#9A9080" stroke-width="0.5"/>
+        <!-- Faucet matte black -->
+        <line x1="176" y1="372" x2="176" y2="360" stroke="#2A2A28" stroke-width="1.8"/>
+        <line x1="172" y1="360" x2="180" y2="360" stroke="#2A2A28" stroke-width="1.8"/>
+        <ellipse cx="172" cy="360" rx="2" ry="1" fill="#2A2A28"/>
+
+        <!-- UPPER CABINETS on back-z wall
+             Cabinet box: x=0..3, z=3(back wall), h from 150cm to 220cm
+             h150 iso offset = 150/250*70 = 42px
+             h220 iso offset = 220/250*70 = 62px
+             Cabinet face bottom: floor_y - 42
+             Cabinet face top: floor_y - 62
+             At (0,3): y=393-42=351 bottom, 393-62=331 top
+             At (3,3): y=456-42=414 bottom, 456-62=394 top
+        -->
+        <!-- Upper cabinet face (z=3 wall surface) -->
+        <polygon points="89,351 215,414 215,394 89,331"
+                 fill="#D8D4CC" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Cabinet door lines -->
+        <line x1="131" y1="344" x2="131" y2="324" stroke="#9A9080" stroke-width="0.5"/>
+        <line x1="173" y1="365" x2="173" y2="345" stroke="#9A9080" stroke-width="0.5"/>
+        <!-- Cabinet handles -->
+        <line x1="108" y1="340" x2="124" y2="349" stroke="#2A2A28" stroke-width="1.2"/>
+        <line x1="150" y1="352" x2="166" y2="361" stroke="#2A2A28" stroke-width="1.2"/>
+        <line x1="190" y1="366" x2="206" y2="375" stroke="#2A2A28" stroke-width="1.2"/>
+
+        <!-- UPPER CABINETS on side-x wall (x=3)
+             Same heights, x=3 wall, z=0..2.2
+             At (3,0): y=393-42=351 bottom, 393-62=331 top
+             At (3,2.2): y=439-42=397 bottom, 439-62=377 top
+        -->
+        <polygon points="341,351 249,397 249,377 341,331"
+                 fill="#D0CCC4" stroke="#9A9080" stroke-width="0.7"/>
+        <line x1="316" y1="344" x2="316" y2="324" stroke="#9A9080" stroke-width="0.5"/>
+        <line x1="292" y1="370" x2="292" y2="350" stroke="#9A9080" stroke-width="0.5"/>
+        <line x1="326" y1="337" x2="308" y2="346" stroke="#2A2A28" stroke-width="1.2"/>
+        <line x1="302" y1="360" x2="284" y2="369" stroke="#2A2A28" stroke-width="1.2"/>
+
+        <!-- ══════════════════
+             LAYER 6: FOLD TABLE + STOOLS (in room center)
+             Table at x=1.0..1.8, z=1.2..1.8, h=75cm
+             iso(1.0,1.2,h75) = (215+42-50.4, 330+21+25.2)-21 = (207,355)
+             iso(1.8,1.2,h75) = (215+75.6-50.4, 330+37.8+25.2)-21 = (241,371)
+             iso(1.8,1.8,h75) = (215+75.6-75.6, 330+37.8+37.8)-21 = (215,384)
+             iso(1.0,1.8,h75) = (215+42-75.6, 330+21+37.8)-21 = (181,368)
+             h75 offset = 75/250*70 = 21px
+        ══════════════════ -->
+        <!-- Table top face -->
+        <polygon points="207,334 241,350 215,363 181,347"
+                 fill="#D8D0C4" stroke="#9A8870" stroke-width="0.8"/>
+        <!-- Table top wood texture lines -->
+        <g stroke="#C0B8A8" stroke-width="0.5" opacity="0.5">
+          <line x1="207" y1="337" x2="215" y2="366"/>
+          <line x1="215" y1="334" x2="222" y2="363"/>
+          <line x1="224" y1="335" x2="230" y2="359"/>
+        </g>
+        <!-- Table front face (z=1.2 surface) -->
+        <polygon points="207,334 241,350 241,371 207,355"
+                 fill="#C8C0B0" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Table right face (x=1.8 surface) -->
+        <polygon points="241,350 215,363 215,384 241,371"
+                 fill="#B8B0A0" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Table leg (visible front-left) -->
+        <line x1="207" y1="355" x2="207" y2="375" stroke="#9A8870" stroke-width="1.5"/>
+        <line x1="241" y1="371" x2="241" y2="391" stroke="#9A8870" stroke-width="1.5"/>
+
+        <!-- Stools (simple cylinder shapes in iso)
+             Stool 1: x=0.7, z=1.8, h=45 → iso offset 45/250*70=13px
+             iso(0.7,1.8) = (215+29.4-75.6, 330+14.7+37.8) = (169,382) -13 = (169,369)
+             Stool 2: x=1.6, z=1.9, h=45
+             iso(1.6,1.9) = (215+67.2-79.8, 330+33.6+39.9) = (202,403) -13 = (202,390)
+        -->
+        <!-- Stool 1 top ellipse -->
+        <ellipse cx="169" cy="369" rx="11" ry="6" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.8"/>
+        <!-- Stool 1 body -->
+        <polygon points="158,369 180,369 180,382 158,382" fill="#B8B0A0" stroke="#9A8870" stroke-width="0.5"/>
+        <ellipse cx="169" cy="382" rx="11" ry="6" fill="#A8A090" stroke="#9A8870" stroke-width="0.5"/>
+
+        <!-- Stool 2 top ellipse -->
+        <ellipse cx="205" cy="381" rx="11" ry="6" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.8"/>
+        <polygon points="194,381 216,381 216,394 194,394" fill="#B8B0A0" stroke="#9A8870" stroke-width="0.5"/>
+        <ellipse cx="205" cy="394" rx="11" ry="6" fill="#A8A090" stroke="#9A8870" stroke-width="0.5"/>
+
+        <!-- ══════════════════
+             LAYER 7: NEAR WALLS (front faces, drawn last so they appear in front)
+        ══════════════════ -->
+
+        <!-- FRONT-RIGHT WALL (z=0) — right face visible to viewer
+             P_front(215,330) → P_right(341,393) → C_right(341,323) → C_front(215,260)
+             This face has the DOOR opening (x=1.5..2.5, full height)
+             Door iso x=1.5..2.5 at z=0:
+             iso(1.5,0) = (215+63,330+31.5) = (278,361) floor
+             iso(2.5,0) = (215+105,330+52.5) = (320,382) floor
+             Ceiling at these: (278,291) and (320,312)
+             Door top at h=220cm → offset = 220/250*70=62px
+             iso(1.5,0,h220) = (278,361-62) = (278,299)
+             iso(2.5,0,h220) = (320,382-62) = (320,320)
+        -->
+        <!-- Wall fill first (full face, then cut door by painting door separately) -->
+        <!-- Left part of z=0 wall (x=0..1.5) -->
+        <polygon points="215,330 278,361 278,291 215,260"
+                 fill="rgba(240,236,228,0.92)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Right part of z=0 wall (x=2.5..3) -->
+        <polygon points="320,382 341,393 341,323 320,312"
+                 fill="rgba(240,236,228,0.88)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Door frame area -->
+        <polygon points="278,361 320,382 320,312 278,291"
+                 fill="rgba(240,236,228,0.88)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- DOOR (on z=0 face, x=1.5..2.5)
+             The door is the opening — panel shown -->
+        <!-- Door reveal (frame edge) -->
+        <polygon points="278,299 320,320 320,382 278,361"
+                 fill="#E8E2D8" stroke="#A09080" stroke-width="1"/>
+        <!-- Door panel inset -->
+        <polygon points="281,301 317,320 317,378 281,359"
+                 fill="#EEE8E0" stroke="#C0B8A8" stroke-width="0.5"/>
+        <!-- Door panel grooves (minimalist rectangle detail) -->
+        <polygon points="284,308 313,323 313,365 284,350"
+                 fill="none" stroke="#C8C0B0" stroke-width="0.5"/>
+        <!-- Door handle -->
+        <ellipse cx="308" cy="340" rx="2.5" ry="1.5" fill="#2A2A28"/>
+        <line x1="306" y1="340" x2="306" y2="348" stroke="#2A2A28" stroke-width="1.2"/>
+
+        <!-- FRONT-LEFT WALL (x=0) — left face visible
+             P_front(215,330) → P_left(89,393) → C_left(89,323) → C_front(215,260)
+             This face has the WINDOW (z=1..1.8, h=100..170)
+             Window: z=1..1.8 (width 0.8m), h=100..170cm
+             h100 offset=28px, h170 offset=48px
+             iso(0,1.0) = (215-42,330+21) = (173,351)
+             iso(0,1.8) = (215-75.6,330+37.8) = (139,368)
+             Window bottom: (173,351-28)=(173,323), (139,368-28)=(139,340)
+             Window top:    (173,351-48)=(173,303), (139,368-48)=(139,320)
+        -->
+        <polygon points="215,330 89,393 89,323 215,260"
+                 fill="rgba(232,228,220,0.90)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Window on x=0 wall -->
+        <!-- Window opening (glass) -->
+        <polygon points="173,303 139,320 139,340 173,323"
+                 fill="#C8E0DC" stroke="#8BBCAF" stroke-width="0.8" opacity="0.85"/>
+        <!-- Window frame -->
+        <polygon points="173,303 139,320 139,340 173,323"
+                 fill="none" stroke="#4A4A48" stroke-width="1.2"/>
+        <!-- Window crossbar -->
+        <line x1="173" y1="313" x2="139" y2="330" stroke="#4A4A48" stroke-width="0.8"/>
+        <line x1="156" y1="302" x2="156" y2="341" stroke="#4A4A48" stroke-width="0.5" opacity="0.6"/>
+        <!-- Window reflection -->
+        <polygon points="175,304 141,321 141,330 175,313"
+                 fill="rgba(200,230,220,0.3)" stroke="none"/>
+
+        <!-- ══════════════════
+             LAYER 8: CEILING (semi-transparent, drawn last)
+        ══════════════════ -->
+        <polygon points="215,260 341,323 215,386 89,323"
+                 fill="url(#ceilK)" stroke="rgba(154,144,128,0.4)" stroke-width="0.6" opacity="0.5"/>
+
+        <!-- ══════════════════
+             CALLOUT LABELS
+        ══════════════════ -->
+        <!-- Hob label -->
+        <line x1="120" y1="357" x2="65" y2="330" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="10" y="328" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">HOB 2-BURNER</text>
+
+        <!-- Sink label -->
+        <line x1="176" y1="373" x2="190" y2="320" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="185" y="317" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">SINK 2-BOWL</text>
+
+        <!-- Table label -->
+        <line x1="215" y1="360" x2="270" y2="310" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="270" y="307" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">FOLD TABLE</text>
+
+        <!-- Counter label -->
+        <line x1="180" y1="390" x2="130" y2="420" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="60" y="428" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">QUARTZ COUNTER</text>
+
+        <!-- Window label -->
+        <line x1="142" y1="330" x2="55" y2="345" stroke="#8BBCAF" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="10" y="348" font-family="DM Mono, monospace" font-size="7.5" fill="#5A8A80">WINDOW / VENT</text>
+
+        <!-- Title -->
+        <text x="215" y="20" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#9A9990" letter-spacing="0.14em">ISOMETRIC VIEW — MODULE 02 / KITCHEN</text>
+
+        <!-- Join point indicator (left wall bottom) -->
+        <rect x="85" y="373" width="5" height="50" fill="#B5895A" opacity="0.8" rx="1"/>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- SPECS -->
+  <div class="specs-grid">
+    <div class="spec-block">
+      <h3>Module Size</h3>
+      <div class="spec-row"><span class="spec-key">Width</span><span class="spec-val">3,000 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Depth</span><span class="spec-val">3,000 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Ceiling Height</span><span class="spec-val">2,500 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Counter Height</span><span class="spec-val">900 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Upper Cabinet H</span><span class="spec-val">600 mm</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Kitchen Equipment</h3>
+      <div class="spec-row"><span class="spec-key">Hob 2-burner (built-in)</span><span class="spec-val">700 × 380</span></div>
+      <div class="spec-row"><span class="spec-key">Sink (2-bowl, stainless)</span><span class="spec-val">750 × 450</span></div>
+      <div class="spec-row"><span class="spec-key">Refrigerator</span><span class="spec-val">600 × 650</span></div>
+      <div class="spec-row"><span class="spec-key">Fold table (wall-mount)</span><span class="spec-val">800 × 600</span></div>
+      <div class="spec-row"><span class="spec-key">Counter depth</span><span class="spec-val">600 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Door clear width</span><span class="spec-val">800 mm</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Zones</h3>
+      <div class="spec-row"><span class="spec-key">Cooking + prep zone</span><span class="spec-val">~3.6 m²</span></div>
+      <div class="spec-row"><span class="spec-key">Dining / table zone</span><span class="spec-val">~2.4 m²</span></div>
+      <div class="spec-row"><span class="spec-key">Circulation</span><span class="spec-val">~3.0 m²</span></div>
+      <h3 style="margin-top:14px">Brand Reference</h3>
+      <div class="spec-row"><span class="spec-key">Sink + Faucet</span><span class="spec-val">Grohe / Franke</span></div>
+      <div class="spec-row"><span class="spec-key">Hob</span><span class="spec-val">Rinnai / Teka</span></div>
+      <div class="spec-row"><span class="spec-key">Cabinet</span><span class="spec-val">SCG / Index Living</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Materials Palette</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#EAE4DA;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">CONCRETE<br>TILE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#C0A882,#A89068);border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">PVC FOIL<br>WOOD</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#DEDAD4;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">QUARTZ<br>COUNTER</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#E8E4DC;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">HEX TILE<br>SPLASH</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#2A2A28;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">MATTE<br>BLACK</span>
+        </div>
+      </div>
+      <span class="chip dark">Matte Black</span>
+      <span class="chip">Quartz White</span>
+      <span class="chip">PVC Wood Grain</span>
+      <span class="chip">Hex Backsplash</span>
+    </div>
+
+    <div class="legend">
+      <h3>Legend</h3>
+      <div class="legend-items">
+        <div class="legend-item"><div class="legend-swatch" style="background:#EAE4DA"></div>Floor (concrete look tile)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(90deg,#C0A882,#A89068)"></div>Counter cabinet (PVC wood foil)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#DEDAD4"></div>Counter top (quartz stone)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#E8E4DC"></div>Backsplash (hex tile)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#D8D4CC"></div>Upper cabinets</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#3A3A36"></div>Structural wall</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#B5895A"></div>Module Join Point (to Nordic)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#C8E0DC"></div>Window (ventilation)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>FrameFAST</span>
+    <span>Module-02 / Kitchen / Floor Plan + Isometric View</span>
+    <span>Rev.01 — Feb 2026</span>
+  </div>
+
+</div>
+</body>
+</html>

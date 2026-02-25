@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameFAST — Plug & Play Module Series</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Noto+Sans+Thai:wght@200;300;400;500&display=swap');
+
+:root {
+  --ink:       #1C1C1A;
+  --ink-mid:   #5A5A54;
+  --ink-light: #9A9A90;
+  --paper:     #F8F5F0;
+  --cream:     #EDE8E0;
+  --warm:      #E0D8CC;
+  --accent:    #8A7355;
+  --gold:      #C4A265;
+  --bath:      #7AADA0;
+  --kitchen:   #A08860;
+  --outdoor:   #7A9870;
+  --join:      #B5895A;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --thai: 'Noto Sans Thai', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--thai);
+  overflow-x: hidden;
+}
+
+/* ── CURSOR ── */
+*, *::before, *::after { cursor: none; }
+.cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--ink); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, background 0.2s, width 0.2s, height 0.2s;
+  mix-blend-mode: multiply;
+}
+.cursor.hover { width: 32px; height: 32px; background: var(--gold); opacity: 0.6; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 48px;
+  background: rgba(248,245,240,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--ink);
+}
+.nav-brand-text {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.18em;
+  text-transform: uppercase; font-weight: 500;
+}
+.nav-links {
+  display: flex; gap: 32px; list-style: none;
+}
+.nav-links a {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-mid); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--ink); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 48px 80px 64px;
+  position: relative; z-index: 2;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.hero-eyebrow::before {
+  content: ''; display: block; width: 32px; height: 1px; background: var(--gold);
+}
+
+.hero-title {
+  font-family: var(--serif); font-size: 72px; font-weight: 300;
+  line-height: 1.0; letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.hero-title em { font-style: italic; color: var(--accent); }
+
+.hero-subtitle {
+  font-family: var(--serif); font-size: 22px; font-weight: 300;
+  color: var(--ink-mid); margin-bottom: 40px; line-height: 1.5;
+  font-style: italic;
+}
+
+.hero-desc {
+  font-size: 15px; font-weight: 300; line-height: 1.9;
+  color: var(--ink-mid); max-width: 440px; margin-bottom: 48px;
+}
+
+.hero-cta {
+  display: flex; gap: 16px; align-items: center;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--ink); color: var(--paper);
+  padding: 14px 28px; text-decoration: none;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; transition: all 0.25s;
+}
+.btn-primary:hover { background: var(--accent); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--ink); text-decoration: none;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 14px 0;
+  border-bottom: 1px solid var(--ink); transition: all 0.2s;
+}
+.btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
+
+.hero-right {
+  position: relative; overflow: hidden;
+  background: var(--cream);
+}
+
+/* Iso room sketch in hero */
+.hero-iso-wrapper {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero-badge {
+  position: absolute; bottom: 48px; left: 64px;
+  display: flex; gap: 24px;
+}
+.badge-item {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.badge-num {
+  font-family: var(--serif); font-size: 36px; font-weight: 300;
+  color: var(--accent); line-height: 1;
+}
+.badge-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-light);
+}
+
+/* ── CONCEPT SECTION ── */
+.concept {
+  padding: 120px 64px;
+  display: grid; grid-template-columns: 1fr 2px 1.4fr;
+  gap: 80px; align-items: start;
+}
+.divider-line { background: var(--warm); }
+
+.concept-tag {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 20px;
+}
+.concept-title {
+  font-family: var(--serif); font-size: 44px; font-weight: 300;
+  line-height: 1.15; margin-bottom: 32px;
+}
+.concept-title em { font-style: italic; color: var(--accent); }
+
+.concept-body {
+  font-size: 15px; font-weight: 300; line-height: 2.0;
+  color: var(--ink-mid); margin-bottom: 24px;
+}
+
+.concept-right {}
+
+.jigsaw-diagram {
+  display: flex; flex-direction: column; gap: 0;
+  margin-bottom: 40px;
+}
+
+.jigsaw-nordic {
+  background: var(--ink); color: var(--paper);
+  padding: 20px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.jigsaw-nordic-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.jigsaw-nordic-size {
+  font-family: var(--serif); font-size: 20px; font-style: italic;
+}
+
+.jigsaw-connector {
+  display: flex; align-items: center; justify-content: center;
+  height: 36px; position: relative;
+}
+.jigsaw-connector::before {
+  content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+  background: var(--join); transform: translateX(-50%);
+}
+.jigsaw-plug {
+  width: 28px; height: 28px; background: var(--paper);
+  border: 1px solid var(--join); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; z-index: 1;
+  font-family: var(--mono); font-size: 9px; color: var(--join);
+}
+
+.jigsaw-modules {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px;
+}
+.jigsaw-mod {
+  padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.jigsaw-mod:nth-child(1) { background: rgba(122,173,160,0.12); border-top: 2px solid var(--bath); }
+.jigsaw-mod:nth-child(2) { background: rgba(160,136,96,0.12); border-top: 2px solid var(--kitchen); }
+.jigsaw-mod:nth-child(3) { background: rgba(122,152,112,0.12); border-top: 2px solid var(--outdoor); }
+.jigsaw-mod-num {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-light);
+}
+.jigsaw-mod-name {
+  font-family: var(--serif); font-size: 16px; font-weight: 400;
+}
+.jigsaw-mod-size {
+  font-family: var(--mono); font-size: 9px; color: var(--ink-light);
+}
+
+.concept-note {
+  padding: 20px 24px;
+  border-left: 2px solid var(--gold);
+  background: rgba(196,162,101,0.05);
+  font-size: 13px; font-weight: 300; line-height: 1.8;
+  color: var(--ink-mid); font-style: italic;
+}
+
+/* ── MODULES SECTION ── */
+.modules {
+  padding: 0 64px 120px;
+}
+
+.modules-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 60px 0 48px;
+  border-top: 1px solid var(--warm);
+}
+.modules-header-left {}
+.section-tag {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--serif); font-size: 48px; font-weight: 300; line-height: 1.0;
+}
+
+.modules-grid {
+  display: grid; grid-template-columns: 1fr; gap: 2px;
+}
+
+/* ── MODULE CARD ── */
+.module-card {
+  display: grid; grid-template-columns: 80px 1fr 1fr 280px;
+  min-height: 280px; position: relative; overflow: hidden;
+  transition: all 0.3s;
+}
+.module-card:hover .card-preview { transform: scale(1.02); }
+
+.card-number {
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 36px 0 0;
+  background: var(--ink);
+}
+.card-num-text {
+  font-family: var(--serif); font-size: 52px; font-weight: 300;
+  color: rgba(255,255,255,0.12); line-height: 1; writing-mode: vertical-rl;
+  transform: rotate(180deg); letter-spacing: 0.1em;
+}
+
+.card-info {
+  padding: 36px 40px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.card-module-tag {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--serif); font-size: 36px; font-weight: 300;
+  line-height: 1.1; margin-bottom: 16px;
+}
+.card-title-th {
+  font-family: var(--thai); font-size: 14px; font-weight: 300;
+  color: var(--ink-light); margin-bottom: 24px;
+}
+.card-desc {
+  font-size: 14px; font-weight: 300; line-height: 1.9;
+  color: var(--ink-mid); flex: 1; margin-bottom: 28px;
+}
+
+.card-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 12px 20px;
+  border: 1px solid currentColor; transition: all 0.25s;
+  align-self: flex-start;
+}
+.card-link:hover { color: var(--paper); }
+
+.card-specs {
+  padding: 36px 32px;
+  background: var(--cream);
+  display: flex; flex-direction: column; gap: 0;
+}
+.card-specs-title {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-light);
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--warm);
+}
+.spec-item {
+  display: flex; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px dotted rgba(0,0,0,0.07);
+  font-size: 12px;
+}
+.spec-item:last-child { border-bottom: none; }
+.spec-k { color: var(--ink-light); font-weight: 300; }
+.spec-v { font-family: var(--mono); font-size: 11px; }
+
+.card-preview {
+  position: relative; overflow: hidden;
+  transition: transform 0.4s ease;
+}
+.card-preview-inner {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Card color themes */
+.module-card.bath  .card-number { background: #1A2E2C; }
+.module-card.bath  .card-num-text { color: rgba(122,173,160,0.2); }
+.module-card.bath  .card-module-tag { color: var(--bath); }
+.module-card.bath  .card-link { color: var(--bath); }
+.module-card.bath  .card-link:hover { background: var(--bath); border-color: var(--bath); }
+.module-card.bath  .card-preview { background: rgba(122,173,160,0.08); }
+
+.module-card.kitchen .card-number { background: #2A2218; }
+.module-card.kitchen .card-num-text { color: rgba(160,136,96,0.2); }
+.module-card.kitchen .card-module-tag { color: var(--kitchen); }
+.module-card.kitchen .card-link { color: var(--kitchen); }
+.module-card.kitchen .card-link:hover { background: var(--kitchen); border-color: var(--kitchen); }
+.module-card.kitchen .card-preview { background: rgba(160,136,96,0.08); }
+
+.module-card.outdoor .card-number { background: #1A2A1C; }
+.module-card.outdoor .card-num-text { color: rgba(122,152,112,0.2); }
+.module-card.outdoor .card-module-tag { color: var(--outdoor); }
+.module-card.outdoor .card-link { color: var(--outdoor); }
+.module-card.outdoor .card-link:hover { background: var(--outdoor); border-color: var(--outdoor); }
+.module-card.outdoor .card-preview { background: rgba(122,152,112,0.08); }
+
+/* ── MATERIALS SECTION ── */
+.materials {
+  padding: 80px 64px;
+  background: var(--ink);
+  color: var(--paper);
+}
+.mat-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 56px;
+}
+.mat-tag {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+}
+.mat-title {
+  font-family: var(--serif); font-size: 44px; font-weight: 300; color: var(--paper);
+}
+.mat-subtitle {
+  font-size: 14px; font-weight: 200; color: rgba(255,255,255,0.4);
+  font-style: italic; font-family: var(--serif);
+}
+.mat-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
+}
+.mat-item {
+  display: flex; flex-direction: column;
+}
+.mat-swatch { height: 120px; }
+.mat-info { padding: 16px; background: rgba(255,255,255,0.04); }
+.mat-name {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--paper); margin-bottom: 4px;
+}
+.mat-use {
+  font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 200;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 64px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--warm);
+}
+.footer-brand {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-mid);
+}
+.footer-meta {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  color: var(--ink-light); text-align: right; line-height: 1.8;
+  text-transform: uppercase;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 200; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.hero-left > * {
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards;
+}
+.hero-eyebrow  { animation-delay: 0.1s; }
+.hero-title    { animation-delay: 0.2s; }
+.hero-subtitle { animation-delay: 0.3s; }
+.hero-desc     { animation-delay: 0.4s; }
+.hero-cta      { animation-delay: 0.5s; }
+.hero-badge    { animation-delay: 0.6s; opacity: 0; animation: fadeUp 0.7s 0.6s ease forwards; }
+
+.module-card {
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards;
+}
+.module-card:nth-child(1) { animation-delay: 0.1s; }
+.module-card:nth-child(2) { animation-delay: 0.25s; }
+.module-card:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── MINI ISO PREVIEWS ── */
+.mini-iso { width: 100%; height: 100%; }
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+      <path d="M14 2 L26 8 L26 20 L14 26 L2 20 L2 8 Z" stroke="#1C1C1A" stroke-width="1.5" fill="none"/>
+      <path d="M14 2 L14 26 M2 8 L26 20 M26 8 L2 20" stroke="#1C1C1A" stroke-width="0.75" opacity="0.35"/>
+    </svg>
+    <span class="nav-brand-text">FrameFAST</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#materials">Materials</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Plug &amp; Play Series</div>
+    <h1 class="hero-title">
+      Build<br>
+      <em>your home</em><br>
+      like Jigsaw
+    </h1>
+    <p class="hero-subtitle">โมดูล 3×3 สำหรับต่อกับบ้าน Nordic 3×6</p>
+    <p class="hero-desc">
+      เลือกโมดูลที่ใช่ แล้วต่อเข้ากับบ้าน Nordic ได้ทันที ไม่ว่าจะเป็นห้องน้ำ ครัว หรือลานนั่งเล่น
+      ออกแบบในสไตล์ Japandi Minimal เน้น function และ material quality ที่เหมาะกับการใช้ชีวิตของคนไทย
+    </p>
+    <div class="hero-cta">
+      <a href="#modules" class="btn-primary">ดู 3 โมดูล ↓</a>
+      <a href="#concept" class="btn-ghost">Concept →</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-iso-wrapper">
+      <!-- Hero isometric sketch of 3 modules connected to Nordic house -->
+      <svg viewBox="0 0 520 460" width="90%" style="opacity:0;animation:fadeIn 1s 0.6s ease forwards;">
+        <defs>
+          <linearGradient id="hNordic" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2A2A26"/>
+            <stop offset="100%" stop-color="#1A1A18"/>
+          </linearGradient>
+          <linearGradient id="hFloor" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E0D8CC"/>
+            <stop offset="100%" stop-color="#CCC4B4"/>
+          </linearGradient>
+          <!-- Modules -->
+          <linearGradient id="hBath" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#B4D0C8"/>
+            <stop offset="100%" stop-color="#9ABFB8"/>
+          </linearGradient>
+          <linearGradient id="hKitch" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D0BC98"/>
+            <stop offset="100%" stop-color="#BCAA84"/>
+          </linearGradient>
+          <linearGradient id="hOutdoor" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#B4C8A8"/>
+            <stop offset="100%" stop-color="#A0B494"/>
+          </linearGradient>
+        </defs>
+
+        <!-- TW=38, TH=19, iso(x,z)=(260+x*38-z*38, 250+x*19+z*19) -->
+        <!-- Nordic house: x=0..6, z=0..3, h=80px -->
+
+        <!-- ── NORDIC FLOOR ── -->
+        <!-- iso(0,0)=(260,250) iso(6,0)=(488,364) iso(6,3)=(374,421) iso(0,3)=(146,307) -->
+        <polygon points="260,250 488,364 374,421 146,307" fill="url(#hFloor)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Nordic left wall x=0: (260,250)(146,307)(146,227)(260,170) -->
+        <polygon points="260,250 146,307 146,227 260,170" fill="#E8E4DC" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Nordic right wall z=0 (front): (260,250)(488,364)(488,284)(260,170) -->
+        <polygon points="260,250 488,364 488,284 260,170" fill="#DEDAD4" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Nordic back walls (z=3, x=3 — not visible, just back-x at x=6) -->
+        <polygon points="488,364 374,421 374,341 488,284" fill="#D0CCC4" stroke="#9A9080" stroke-width="0.8"/>
+        <polygon points="146,307 374,421 374,341 146,227" fill="#E0DCD4" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Nordic roof (gable) -->
+        <!-- Peak: center x=3, z=1.5, h_roof=50 → iso(3,1.5)=(260+114-57,250+57+28.5)=(317,335.5) - 120 = (317,216) -->
+        <!-- Ridge line: x=0..6 at z=1.5 center, h=120: -->
+        <!-- iso(0,1.5,h120)=(260-57,250+28.5)-120=(203,158) -->
+        <!-- iso(6,1.5,h120)=(260+228-57,250+114+28.5)-120=(431,272) -->
+        <!-- Gable end left (x=0 face, z=0..3, peak at z=1.5): -->
+        <polygon points="260,170 146,227 146,227 203,158" fill="#C8C4BC" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Gable end right (x=6): -->
+        <!-- iso(6,0,h80)=(488,364-80)=(488,284), iso(6,3,h80)=(374,421-80)=(374,341), peak=(431,272) -->
+        <!-- Roof left face: -->
+        <polygon points="260,170 146,227 203,158" fill="#B8B4AC" stroke="#9A9080" stroke-width="0.7"/>
+        <polygon points="488,284 374,341 431,272" fill="#C0BCB4" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Roof main faces -->
+        <polygon points="203,158 260,170 488,284 431,272" fill="#D0CCC4" stroke="#9A9080" stroke-width="0.8"/>
+        <polygon points="203,158 146,227 374,341 431,272" fill="#C0BCB8" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Nordic label -->
+        <text x="317" y="310" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#9A9080" letter-spacing="0.12em">NORDIC 3 × 6</text>
+
+        <!-- ── MODULE BLOCKS (3×3 each, attached to left wall x=0) ──
+             Modules extend in negative x: x=-3..0
+             Each module: 3 wide (x), 3 deep (z), h=60
+
+             Module 1 (bathroom): z=0..3 (full width of Nordic)
+             Wait — Nordic is x=0..6, z=0..3
+             Modules go to the LEFT (z-side)? Let's put them extending in z: z=3..6
+             
+             Actually better: modules attach to the z=0 front face
+             So modules are at z=-3..0 (in front of Nordic)
+             
+             Module 1 (bath):    x=0..3, z=-3..0
+             Module 2 (kitchen): x=... they're side by side
+             Actually all 3 are 3×3 each, placed side by side in front:
+             Module 1: x=0..2, z=-3..0  → attach to Nordic at z=0 line
+             Wait nordic is 3 deep (z=0..3) and 6 wide (x=0..6)
+             
+             Let's place modules along z side (left of Nordic):
+             All 3 modules in z=-3..0 (in front), each 2m wide (x=0..2, 2..4, 4..6)
+             
+             Simpler: modules are x=0..3 each, placed in negative z:
+             Module bath:    x=0..3, z=-3..0
+             Module kitchen: x=0..3 .. no
+             
+             Let's just do z position, stagger in front:
+             Module 1 bath:    x=0..3, z=-3..0 → front of Nordic left half
+             Module 2 kitchen: x=3..6, z=-3..0 → front of Nordic right half
+             Module 3 outdoor: x=0..3, z=-6..-3 → further in front of bath (no, not jigsaw)
+             
+             Actually the concept is: attach to either side (z=0 or z=3 or x=0 or x=6)
+             Let me show them attached to z=3 (back/right) side each as a row:
+             Module 1: x=0..3, z=3..6
+             Module 2: x=3..6, z=3..6 ... but z=6 means further back
+             
+             Simplest readable layout: all 3 modules in a row beneath the Nordic house
+             at z=3..6 (behind/below in iso):
+             M1 bath:    x=0..3, z=3..6
+             M2 kitchen: x=0..3 ... hmm they overlap
+             
+             OK, final decision: show all 3 modules at z=3..6 (attached to back of Nordic), each 2 wide:
+             M1 bath:    x=0..2, z=3..6
+             M2 kitchen: x=2..4, z=3..6  
+             M3 outdoor: x=4..6, z=3..6
+             
+             iso(0,3)=(146,307) iso(2,3)=(222,345) iso(4,3)=(298,383) iso(6,3)=(374,421)
+             iso(0,6)=(32,364)  iso(2,6)=(108,402) iso(4,6)=(184,440) iso(6,6)=(260,478)
+             h=60: subtract 60 from y
+        -->
+
+        <!-- MODULE 1 BATH (x=0..2, z=3..6) -->
+        <!-- Floor: (146,307)(222,345)(108,402)(32,364) -->
+        <polygon points="146,307 222,345 108,402 32,364" fill="url(#hBath)" stroke="#7AADA0" stroke-width="0.8" opacity="0.7"/>
+        <!-- Front face z=3: (146,307)(222,345)(222,285)(146,247) -->
+        <polygon points="146,307 222,345 222,285 146,247" fill="#C4DDD8" stroke="#7AADA0" stroke-width="0.8"/>
+        <!-- Left face x=0: (146,307)(32,364)(32,304)(146,247) -->
+        <polygon points="146,307 32,364 32,304 146,247" fill="#B4CCC8" stroke="#7AADA0" stroke-width="0.8"/>
+        <!-- Module label -->
+        <text x="120" y="316" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#4A8078" letter-spacing="0.1em">BATH</text>
+        <text x="120" y="326" text-anchor="middle" font-family="DM Mono,monospace" font-size="6.5" fill="#7AADA0">3 × 3</text>
+
+        <!-- MODULE 2 KITCHEN (x=2..4, z=3..6) -->
+        <polygon points="222,345 298,383 184,440 108,402" fill="url(#hKitch)" stroke="#A08860" stroke-width="0.8" opacity="0.7"/>
+        <polygon points="222,345 298,383 298,323 222,285" fill="#D8C8A0" stroke="#A08860" stroke-width="0.8"/>
+        <polygon points="222,345 108,402 108,342 222,285" fill="#C8B890" stroke="#A08860" stroke-width="0.8"/>
+        <text x="195" y="360" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#7A6030" letter-spacing="0.1em">KITCHEN</text>
+        <text x="195" y="370" text-anchor="middle" font-family="DM Mono,monospace" font-size="6.5" fill="#A08860">3 × 3</text>
+
+        <!-- MODULE 3 OUTDOOR (x=4..6, z=3..6) -->
+        <polygon points="298,383 374,421 260,478 184,440" fill="url(#hOutdoor)" stroke="#7A9870" stroke-width="0.8" opacity="0.7"/>
+        <polygon points="298,383 374,421 374,361 298,323" fill="#C4D4B0" stroke="#7A9870" stroke-width="0.8"/>
+        <polygon points="298,383 184,440 184,380 298,323" fill="#B4C4A0" stroke="#7A9870" stroke-width="0.8"/>
+        <!-- Bi-fold door indication (open) on front face z=3 x=4..6 -->
+        <line x1="298" y1="383" x2="374" y2="421" stroke="#7A9870" stroke-width="0.5" stroke-dasharray="4,2" opacity="0.5"/>
+        <text x="272" y="400" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#4A7840" letter-spacing="0.1em">OUTDOOR</text>
+        <text x="272" y="410" text-anchor="middle" font-family="DM Mono,monospace" font-size="6.5" fill="#7A9870">3 × 3</text>
+
+        <!-- Join point indicators -->
+        <rect x="143" y="295" width="5" height="14" fill="#B5895A" rx="1"/>
+        <rect x="219" y="333" width="5" height="14" fill="#B5895A" rx="1"/>
+        <rect x="295" y="371" width="5" height="14" fill="#B5895A" rx="1"/>
+
+        <!-- Dimension arrows -->
+        <!-- Nordic 3×6 label -->
+        <text x="317" y="248" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#5A5A50" letter-spacing="0.1em">6,000 mm</text>
+        <line x1="260" y1="244" x2="374" y2="244" stroke="#9A9080" stroke-width="0.5"/>
+      </svg>
+    </div>
+
+    <div class="hero-badge">
+      <div class="badge-item">
+        <div class="badge-num">3</div>
+        <div class="badge-label">Modules</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-num">3×3</div>
+        <div class="badge-label">Meter each</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-num">1</div>
+        <div class="badge-label">Join Point</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="concept" id="concept">
+  <div>
+    <div class="concept-tag">Concept</div>
+    <h2 class="concept-title">
+      3 Module.<br>
+      <em>Infinite</em><br>
+      Possibility.
+    </h2>
+    <p class="concept-body">
+      บ้าน Nordic 3×6 คือ "ลำตัว" หลัก ลูกค้าสามารถเลือกต่อโมดูล 3×3 ได้ทีละชิ้นตามความต้องการ
+      ทั้งสามโมดูลออกแบบให้ประกอบเข้ากันได้เหมือน Jigsaw — ต่อได้ทุกด้าน, ถอดออกได้, ขยายได้ในอนาคต
+    </p>
+    <p class="concept-body">
+      ทุกชิ้นมี <strong>Join Point</strong> มาตรฐานที่ด้านเดียวกัน ทำให้การต่อโมดูลเป็นเรื่อง Plug &amp; Play อย่างแท้จริง
+      ไม่ต้องก่อสร้างใหม่ทั้งหลัง ลูกค้าชั้นกลางสามารถเริ่มจากบ้านเปล่าและค่อยๆ เพิ่มห้องทีละโมดูลได้
+    </p>
+    <div class="concept-note">
+      "เริ่มจากบ้าน Nordic 3×6 แล้วเพิ่ม Bathroom Module ก่อน ปีหน้าค่อยต่อ Kitchen อีกตัว"
+      — แนวคิดการขายแบบ Modular Phasing
+    </div>
+  </div>
+
+  <div class="divider-line"></div>
+
+  <div class="concept-right">
+    <div class="concept-tag" style="margin-bottom:20px">Layout Diagram</div>
+    <div class="jigsaw-diagram">
+      <div class="jigsaw-nordic">
+        <span class="jigsaw-nordic-label">Nordic House</span>
+        <span class="jigsaw-nordic-size">3 × 6 m</span>
+      </div>
+      <div class="jigsaw-connector">
+        <span class="jigsaw-plug">⚡</span>
+      </div>
+      <div class="jigsaw-modules">
+        <div class="jigsaw-mod">
+          <div class="jigsaw-mod-num">Module 01</div>
+          <div class="jigsaw-mod-name">Bathroom</div>
+          <div class="jigsaw-mod-size">3 × 3 m</div>
+        </div>
+        <div class="jigsaw-mod">
+          <div class="jigsaw-mod-num">Module 02</div>
+          <div class="jigsaw-mod-name">Kitchen</div>
+          <div class="jigsaw-mod-size">3 × 3 m</div>
+        </div>
+        <div class="jigsaw-mod">
+          <div class="jigsaw-mod-num">Module 03</div>
+          <div class="jigsaw-mod-name">Outdoor</div>
+          <div class="jigsaw-mod-size">3 × 3 m</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
+      <div style="padding:16px;border:1px solid var(--warm);">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);margin-bottom:8px">ต่อได้ทุกด้าน</div>
+        <div style="font-size:13px;font-weight:300;color:var(--ink-mid);line-height:1.7">ด้านข้าง / ด้านหลัง / หน้าบ้าน ยืดหยุ่นตามขนาดที่ดิน</div>
+      </div>
+      <div style="padding:16px;border:1px solid var(--warm);">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);margin-bottom:8px">สไตล์เดียวกัน</div>
+        <div style="font-size:13px;font-weight:300;color:var(--ink-mid);line-height:1.7">Japandi Minimal วัสดุ neutral tone ทุกโมดูล</div>
+      </div>
+      <div style="padding:16px;border:1px solid var(--warm);">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);margin-bottom:8px">เพิ่มทีหลังได้</div>
+        <div style="font-size:13px;font-weight:300;color:var(--ink-mid);line-height:1.7">Phased construction ซื้อเพิ่มได้ทุกเมื่อ</div>
+      </div>
+      <div style="padding:16px;border:1px solid var(--warm);">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);margin-bottom:8px">Brand ไทย</div>
+        <div style="font-size:13px;font-weight:300;color:var(--ink-mid);line-height:1.7">COTTO, SCG, Campana หาง่าย ราคาเข้าถึงได้</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules" id="modules">
+  <div class="modules-header">
+    <div class="modules-header-left">
+      <div class="section-tag">3 Modules / Plug &amp; Play Series</div>
+      <h2 class="section-title">The Collection</h2>
+    </div>
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);text-align:right;line-height:2">
+      Each module 3.0 × 3.0 m<br>
+      Ceiling height 2,500 mm<br>
+      Style: Japandi Minimal
+    </div>
+  </div>
+
+  <div class="modules-grid">
+
+    <!-- ── MODULE 01: BATH ── -->
+    <div class="module-card bath">
+      <div class="card-number">
+        <div class="card-num-text">01</div>
+      </div>
+      <div class="card-info">
+        <div>
+          <div class="card-module-tag">Module 01 — Bathroom</div>
+          <h3 class="card-title">Bathroom<br>+ Shower</h3>
+          <div class="card-title-th">ห้องน้ำ พร้อม Rain Shower</div>
+          <p class="card-desc">
+            แบ่งชัดเจน Dry Zone / Wet Zone ด้วย Glass Screen แบบ Frameless
+            Vanity เป็น Vessel Basin ทรงกลม บน Engineered Stone Counter
+            WC แบบ Wall-hung เพิ่มความง่ายในการทำความสะอาดพื้น
+            Rain Shower Ø200mm ให้ความรู้สึก Spa ทุกเช้า
+            Fitting ทั้งหมดเป็น Matte Black ตามสไตล์ Japandi
+          </p>
+        </div>
+        <a href="bathroom_module_01_v2.html" target="_blank" class="card-link">
+          ดู Floor Plan + 3D View →
+        </a>
+      </div>
+      <div class="card-specs">
+        <div class="card-specs-title">Specifications</div>
+        <div class="spec-item"><span class="spec-k">Shower zone</span><span class="spec-v">900 × 900</span></div>
+        <div class="spec-item"><span class="spec-k">WC (wall-hung)</span><span class="spec-v">360 × 650</span></div>
+        <div class="spec-item"><span class="spec-k">Vanity basin</span><span class="spec-v">Ø500 vessel</span></div>
+        <div class="spec-item"><span class="spec-k">Rain shower</span><span class="spec-v">Ø200 mm</span></div>
+        <div class="spec-item"><span class="spec-k">Door width</span><span class="spec-v">800 mm</span></div>
+        <div class="spec-item"><span class="spec-k">Sanitary brand</span><span class="spec-v">COTTO / A.Std</span></div>
+        <div class="spec-item"><span class="spec-k">Fittings</span><span class="spec-v">Grohe / Häfele</span></div>
+      </div>
+      <div class="card-preview">
+        <div class="card-preview-inner">
+          <!-- Mini bathroom iso preview -->
+          <svg class="mini-iso" viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- TW=32,TH=16,H=52, origin(140,210) -->
+            <!-- Floor: (140,210)(236,258)(140,306)(44,258) -->
+            <polygon points="140,210 236,258 140,306 44,258" fill="#E0D8CC" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Wet zone floor x=1.5..3, z=0..1 -->
+            <!-- iso(1.5,0)=(140+48,210+24)=(188,234), iso(3,0)=(236,258), iso(3,1)=(204,274), iso(1.5,1)=(156,250) -->
+            <polygon points="188,234 236,258 204,274 156,250" fill="#C0D8D2" stroke="#8BBCAF" stroke-width="0.5"/>
+            <!-- Back-z wall: (44,258)(140,306)(140,254)(44,206) -->
+            <polygon points="44,258 140,306 140,254 44,206" fill="#EAE6DE" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Back-x wall: (236,258)(140,306)(140,254)(236,206) -->
+            <polygon points="236,258 140,306 140,254 236,206" fill="#E0DCD4" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Wet wall tiles (x=3 side, z=0..1) -->
+            <polygon points="236,258 204,274 204,222 236,206" fill="#B8D8D0" stroke="#8BBCAF" stroke-width="0.5"/>
+            <!-- Glass screen at x=1.5, z=0..1 -->
+            <!-- iso(1.5,0)=(188,234) top (188,182), iso(1.5,1)=(156,250) top (156,198) -->
+            <polygon points="188,182 156,198 156,250 188,234" fill="rgba(160,210,200,0.4)" stroke="#8BBCAF" stroke-width="0.8"/>
+            <!-- Vanity counter x=0..0.5, z=0.2..1.0 at h=25 -->
+            <!-- iso(0,0.2)=(133,213) top(133,188) iso(0.5,0.2)=(149,221) top(149,196) -->
+            <!-- iso(0.5,1.0)=(125,237) top(125,212) iso(0,1.0)=(108,229) top(108,204) -->
+            <polygon points="133,188 149,196 125,212 108,204" fill="#D0C8BA" stroke="#9A9080" stroke-width="0.6"/>
+            <polygon points="133,188 149,196 149,221 133,213" fill="#C0B8A8" stroke="#9A9080" stroke-width="0.5"/>
+            <!-- Basin ellipse on top -->
+            <ellipse cx="127" cy="200" rx="10" ry="5.5" fill="#F2EEE8" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- WC at x=0..0.5, z=1.8..2.4 -->
+            <!-- iso(0,1.8)=(82,239) at h-range 11..25 -->
+            <polygon points="82,218 98,225 98,236 82,229" fill="#D8D4CE" stroke="#9A9080" stroke-width="0.6"/>
+            <polygon points="82,218 98,225 82,232 66,225" fill="#E0DDD8" stroke="#9A9080" stroke-width="0.5"/>
+            <!-- Rain shower head -->
+            <!-- iso(2.5,0.5,h=54)=(140+80-16,210+40+8)-54=(204,204) -->
+            <ellipse cx="204" cy="196" rx="12" ry="6" fill="#E4E0D8" stroke="#3A3A36" stroke-width="0.8"/>
+            <line x1="204" y1="190" x2="204" y2="176" stroke="#3A3A36" stroke-width="1.2"/>
+            <line x1="196" y1="176" x2="212" y2="176" stroke="#3A3A36" stroke-width="1.2"/>
+            <!-- Front-right wall door panel -->
+            <!-- z=0 face, x=1.1..1.9, full height -->
+            <polygon points="140,210 44,258 44,206 140,158" fill="rgba(235,230,222,0.88)" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Door on z=0, x=1.1..1.8 -->
+            <!-- iso(1.1,0)=(175,228) iso(1.8,0)=(198,239) h=52: (175,176)(198,187) -->
+            <polygon points="175,176 198,187 198,239 175,228" fill="#E8E2D8" stroke="#A09080" stroke-width="0.7"/>
+            <ellipse cx="194" cy="212" rx="2" ry="1.5" fill="#2A2A28"/>
+            <!-- Right near wall (x=0) -->
+            <polygon points="140,210 236,258 236,206 140,158" fill="rgba(232,228,220,0.85)" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Ceiling -->
+            <polygon points="140,158 236,206 140,254 44,206" fill="rgba(248,245,240,0.45)" stroke="#9A9080" stroke-width="0.5"/>
+            <!-- Module label -->
+            <text x="140" y="24" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#7AADA0" letter-spacing="0.12em">MODULE 01 / BATHROOM</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODULE 02: KITCHEN ── -->
+    <div class="module-card kitchen">
+      <div class="card-number">
+        <div class="card-num-text">02</div>
+      </div>
+      <div class="card-info">
+        <div>
+          <div class="card-module-tag">Module 02 — Kitchen</div>
+          <h3 class="card-title">Kitchen<br>L-Shape</h3>
+          <div class="card-title-th">ครัว L-Shape พร้อมโต๊ะพับได้</div>
+          <p class="card-desc">
+            เคาน์เตอร์ L-Shape ตลอดแนวผนังด้านหลังและด้านขวา Counter Depth 60cm มาตรฐาน
+            ตู้บนพร้อม Upper Cabinet ความสูง 60cm ทำให้พื้นที่เก็บของเต็มทุก CM
+            Backsplash Hexagon Tile สไตล์ Japandi เหนือเคาน์เตอร์
+            โต๊ะ Wall-mounted พับเก็บได้เมื่อไม่ใช้ พร้อมที่นั่ง 2 ที่
+            หน้าต่างระบายอากาศฝั่งขวาเพื่อดึงกลิ่นควันออก
+          </p>
+        </div>
+        <a href="kitchen_module_02.html" target="_blank" class="card-link">
+          ดู Floor Plan + 3D View →
+        </a>
+      </div>
+      <div class="card-specs">
+        <div class="card-specs-title">Specifications</div>
+        <div class="spec-item"><span class="spec-k">Hob (2-burner built-in)</span><span class="spec-v">700 × 380</span></div>
+        <div class="spec-item"><span class="spec-k">Sink (2-bowl SS)</span><span class="spec-v">750 × 450</span></div>
+        <div class="spec-item"><span class="spec-k">Refrigerator</span><span class="spec-v">600 × 650</span></div>
+        <div class="spec-item"><span class="spec-k">Fold table</span><span class="spec-v">800 × 600</span></div>
+        <div class="spec-item"><span class="spec-k">Counter depth</span><span class="spec-v">600 mm</span></div>
+        <div class="spec-item"><span class="spec-k">Cabinet brand</span><span class="spec-v">SCG / Index</span></div>
+        <div class="spec-item"><span class="spec-k">Hob brand</span><span class="spec-v">Rinnai / Teka</span></div>
+      </div>
+      <div class="card-preview">
+        <div class="card-preview-inner">
+          <svg class="mini-iso" viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- Same TW=32,TH=16,H=52 -->
+            <polygon points="140,210 236,258 140,306 44,258" fill="#E0D8CC" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- L counter: back z=3, depth 0.6; side x=3, depth 0.6 -->
+            <!-- Back z=3 wall -->
+            <polygon points="44,258 140,306 140,254 44,206" fill="#EAE6DE" stroke="#9A9080" stroke-width="0.6"/>
+            <polygon points="236,258 140,306 140,254 236,206" fill="#E0DCD4" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Backsplash strip on back-z -->
+            <!-- h90-h150: (44,258-25)=(44,233) to (44,258-42)=(44,216) -->
+            <polygon points="44,233 140,281 140,264 44,216" fill="#D8D4CC" stroke="#C0BCBC" stroke-width="0.4" opacity="0.8"/>
+            <!-- Counter back-z top at h=90: (44,233)(140,281)(162,268)(66,220) approx -->
+            <!-- iso(0,3,h90)=(44,258-25)=(44,233), iso(3,3,h90)=(140,306-25)=(140,281) -->
+            <!-- iso(3,2.4,h90)=(140+0-19.2,306-16+25.6)-25=(164,291)-25=(164,266) wait too complex -->
+            <!-- Simplified: just show counter face as strip -->
+            <polygon points="68,220 140,253 140,265 68,232" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.5"/>
+            <polygon points="68,220 140,253 140,265 68,232" fill="rgba(200,180,140,0.3)" stroke="none"/>
+            <!-- Side counter x=3 -->
+            <polygon points="204,226 236,242 236,258 204,242" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.5"/>
+            <!-- Hob ellipses -->
+            <ellipse cx="85" cy="240" rx="6" ry="3.5" fill="#A8A090" stroke="#9A9080" stroke-width="0.5"/>
+            <ellipse cx="105" cy="248" rx="6" ry="3.5" fill="#A8A090" stroke="#9A9080" stroke-width="0.5"/>
+            <!-- Sink -->
+            <ellipse cx="130" cy="264" rx="7" ry="4" fill="#B8B4B0" stroke="#9A9080" stroke-width="0.5"/>
+            <!-- Fold table -->
+            <!-- iso(1,1.3,h75)=(140+32-41.6,210+16+20.8)-21=(130,226)-21=(130,205) approx -->
+            <polygon points="120,205 152,219 138,227 106,213" fill="#D0C8B8" stroke="#9A8870" stroke-width="0.6"/>
+            <!-- Stool 1 -->
+            <ellipse cx="110" cy="228" rx="9" ry="5" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.5"/>
+            <!-- Stool 2 -->
+            <ellipse cx="134" cy="236" rx="9" ry="5" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.5"/>
+            <!-- Door (z=0, right face) -->
+            <polygon points="140,210 236,258 236,206 140,158" fill="rgba(232,228,220,0.88)" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Door panel -->
+            <polygon points="175,215 202,228 202,258 175,245" fill="#E8E2D8" stroke="#A09080" stroke-width="0.7"/>
+            <ellipse cx="198" cy="240" rx="2" ry="1.5" fill="#2A2A28"/>
+            <!-- Left wall -->
+            <polygon points="140,210 44,258 44,206 140,158" fill="rgba(235,230,222,0.88)" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Window on left wall -->
+            <polygon points="105,182 82,194 82,208 105,196" fill="#C8E0DC" stroke="#8BBCAF" stroke-width="0.7" opacity="0.8"/>
+            <!-- Ceiling -->
+            <polygon points="140,158 236,206 140,254 44,206" fill="rgba(248,245,240,0.45)" stroke="#9A9080" stroke-width="0.5"/>
+            <text x="140" y="24" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#A08860" letter-spacing="0.12em">MODULE 02 / KITCHEN</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODULE 03: OUTDOOR ── -->
+    <div class="module-card outdoor">
+      <div class="card-number">
+        <div class="card-num-text">03</div>
+      </div>
+      <div class="card-info">
+        <div>
+          <div class="card-module-tag">Module 03 — Outdoor Living</div>
+          <h3 class="card-title">Outdoor<br>Living</h3>
+          <div class="card-title-th">ลานนั่งเล่น + โซนซักล้าง</div>
+          <p class="card-desc">
+            ประตู Bi-fold อลูมิเนียมกระจกใสกว้าง 240cm เปิดเชื่อมกับสวนได้เต็มบาน
+            สไตล์ In-between Space — ครึ่งใน ครึ่งนอก ให้ความรู้สึกโปร่งโล่ง
+            Daybed นุ่มวางชิดผนังพร้อม Low Table Composite Wood Deck
+            มุมซักล้าง: Washing Machine + Sink + Pulley Rail ดึงขึ้นลงได้
+            Screen Divider กั้นโซนซักล้างออกจาก Sitting Area อย่างมีสไตล์
+          </p>
+        </div>
+        <a href="outdoor_module_03.html" target="_blank" class="card-link">
+          ดู Floor Plan + 3D View →
+        </a>
+      </div>
+      <div class="card-specs">
+        <div class="card-specs-title">Specifications</div>
+        <div class="spec-item"><span class="spec-k">Bi-fold opening</span><span class="spec-v">2,400 mm</span></div>
+        <div class="spec-item"><span class="spec-k">Daybed</span><span class="spec-v">1,800 × 800</span></div>
+        <div class="spec-item"><span class="spec-k">Washing machine</span><span class="spec-v">600 × 600</span></div>
+        <div class="spec-item"><span class="spec-k">Laundry sink</span><span class="spec-v">500 × 400</span></div>
+        <div class="spec-item"><span class="spec-k">Pulley rail</span><span class="spec-v">1,500 mm</span></div>
+        <div class="spec-item"><span class="spec-k">Door brand</span><span class="spec-v">TOSTEM / Kawneer</span></div>
+        <div class="spec-item"><span class="spec-k">Floor</span><span class="spec-v">Composite Deck</span></div>
+      </div>
+      <div class="card-preview">
+        <div class="card-preview-inner">
+          <svg class="mini-iso" viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- TW=32,TH=16,H=52 -->
+            <!-- Floor deck texture -->
+            <polygon points="140,210 236,258 140,306 44,258" fill="#C4B094" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Floor grain lines -->
+            <g stroke="#B0A080" stroke-width="0.5" opacity="0.4">
+              <line x1="172" y1="218" x2="76" y2="266"/>
+              <line x1="204" y1="234" x2="108" y2="282"/>
+            </g>
+            <!-- Laundry zone floor (x=2.4..3, z=0..1.5) -->
+            <polygon points="204,242 236,258 172,282 140,266" fill="#D0C8BC" stroke="#9A9080" stroke-width="0.4"/>
+            <!-- Back walls -->
+            <polygon points="44,258 140,306 140,254 44,206" fill="#EAE6DE" stroke="#9A9080" stroke-width="0.6"/>
+            <polygon points="236,258 140,306 140,254 236,206" fill="#E0DCD4" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Screen divider (x=2.4, z=0..1.5) -->
+            <!-- iso(2.4,0)=(140+76.8,210+38.4)=(217,248) top(217,196) iso(2.4,1.5)=(140+76.8-48,210+38.4+24)=(169,272) top(169,220) -->
+            <polygon points="217,196 169,220 169,272 217,248" fill="rgba(200,195,185,0.45)" stroke="#9A9080" stroke-width="0.7"/>
+            <!-- WM (x=2.4..3, z=0.2..0.8) -->
+            <polygon points="212,222 236,234 236,250 212,238" fill="#D4D0CA" stroke="#9A9080" stroke-width="0.5"/>
+            <polygon points="196,218 212,222 212,238 196,230" fill="#CCC8C2" stroke="#9A9080" stroke-width="0.5"/>
+            <ellipse cx="207" cy="232" rx="7" ry="9" fill="#B8D8D4" stroke="#8BBCAF" stroke-width="0.5" opacity="0.7"/>
+            <!-- Daybed (x=0..1.8, z=0.2..1.0) -->
+            <!-- iso(0,0.2)=(135,213) iso(1.8,0.2)=(135+57.6,213+28.8)=(193,242) -->
+            <!-- h=11: top at (135,202)(193,231)(158,243)(100,214) -->
+            <polygon points="135,202 193,231 158,243 100,214" fill="#DDD5C5" stroke="#9A8870" stroke-width="0.6"/>
+            <polygon points="135,202 193,231 193,242 135,213" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.5"/>
+            <!-- Pillows -->
+            <polygon points="140,198 152,193 156,200 144,205" fill="#C8C0B0" stroke="#B0A898" stroke-width="0.4"/>
+            <!-- Low table -->
+            <polygon points="114,222 146,236 132,244 100,230" fill="#C8C0B0" stroke="#9A8870" stroke-width="0.5"/>
+            <!-- Plant -->
+            <ellipse cx="76" cy="267" rx="9" ry="5" fill="#A0B888" stroke="#8AA878" stroke-width="0.6"/>
+            <line x1="76" y1="262" x2="68" y2="248" stroke="#6A9858" stroke-width="1.2"/>
+            <line x1="76" y1="262" x2="84" y2="246" stroke="#6A9858" stroke-width="1.2"/>
+            <!-- Bi-fold door (z=0 face, mostly open/glass) -->
+            <!-- Left solid: x=0..0.2 -->
+            <polygon points="140,210 44,258 44,206 140,158" fill="rgba(232,228,220,0.88)" stroke="#9A9080" stroke-width="0.6"/>
+            <!-- Glass panels -->
+            <polygon points="140,158 172,174 172,226 140,210" fill="rgba(180,220,212,0.4)" stroke="#4A6065" stroke-width="0.8"/>
+            <polygon points="172,174 204,190 204,242 172,226" fill="rgba(180,220,212,0.35)" stroke="#4A6065" stroke-width="0.8"/>
+            <polygon points="204,190 236,206 236,258 204,242" fill="rgba(180,220,212,0.3)" stroke="#4A6065" stroke-width="0.8"/>
+            <!-- Garden visible through door -->
+            <polygon points="140,210 236,258 250,270 126,226" fill="#C0D0A8" opacity="0.35"/>
+            <!-- Right wall x=0 — now it's left wall in this orientation... just near wall -->
+            <!-- Ceiling -->
+            <polygon points="140,158 236,206 140,254 44,206" fill="rgba(248,245,240,0.4)" stroke="#9A9080" stroke-width="0.5"/>
+            <text x="140" y="24" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#7A9870" letter-spacing="0.12em">MODULE 03 / OUTDOOR LIVING</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section class="materials" id="materials">
+  <div class="mat-header">
+    <div>
+      <div class="mat-tag">Materials / Japandi Palette</div>
+      <h2 class="mat-title">The Material Story</h2>
+    </div>
+    <div class="mat-subtitle">Warm neutrals · Honest textures · Quiet luxury</div>
+  </div>
+  <div class="mat-grid">
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#EDE8E1,#DEDAD2)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Terrazzo Light</div>
+        <div class="mat-use">พื้นห้องน้ำ Dry Zone</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#C4DDD6,#A8C8C0)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Sage Tile</div>
+        <div class="mat-use">ผนัง Wet Zone / Shower</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#C0A882,#A89068)"></div>
+      <div class="mat-info">
+        <div class="mat-name">PVC Wood Foil</div>
+        <div class="mat-use">ตู้ครัว / Vanity Cabinet</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#DEDAD4,#CECCCA)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Quartz White</div>
+        <div class="mat-use">Countertop ครัว + ห้องน้ำ</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#2E2E2A,#1A1A18)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Matte Black</div>
+        <div class="mat-use">Fixtures, Frames, Handles</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#E8E4DC,#D8D4CC)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Hex Tile Warm White</div>
+        <div class="mat-use">Backsplash ครัว</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#C8B898,#B0A080)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Composite Deck</div>
+        <div class="mat-use">พื้น Outdoor Module</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,rgba(200,224,220,0.8),rgba(160,200,195,0.6));border:1px solid rgba(255,255,255,0.1)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Tempered Glass</div>
+        <div class="mat-use">Bi-fold door / Shower screen</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#DDD5C5,#C8C0B0)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Linen Fabric</div>
+        <div class="mat-use">Cushion / Daybed Outdoor</div>
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-swatch" style="background:linear-gradient(160deg,#B5895A,#9A7040)"></div>
+      <div class="mat-info">
+        <div class="mat-name">Warm Bronze</div>
+        <div class="mat-use">Join Point Indicator</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">FrameFAST — Plug &amp; Play Series</div>
+  <div class="footer-meta">
+    3 Modules / Japandi Minimal<br>
+    Rev.01 — February 2026
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+</script>
+</body>
+</html>

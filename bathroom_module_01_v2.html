@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameFAST — Bathroom Module 01</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@200;300;400;500&display=swap');
+  :root {
+    --bg:#F7F5F2; --paper:#FDFCFB; --ink:#1A1A1A; --ink-mid:#555550;
+    --ink-light:#9A9990; --wall:#3A3A36; --join:#B5895A;
+    --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);padding:40px;}
+  .page-wrap{max-width:1400px;margin:0 auto;}
+  .header{display:flex;justify-content:space-between;align-items:flex-end;
+    padding-bottom:20px;border-bottom:1px solid var(--ink);margin-bottom:32px;}
+  .header-title h1{font-size:36px;font-weight:200;letter-spacing:-0.01em;}
+  .header-title p{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+    color:var(--ink-light);text-transform:uppercase;margin-top:4px;}
+  .header-meta{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;
+    color:var(--ink-mid);text-align:right;line-height:1.8;text-transform:uppercase;}
+  .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+  .panel{background:var(--paper);border:1px solid rgba(0,0,0,0.1);padding:28px;}
+  .panel-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:20px;
+    display:flex;justify-content:space-between;align-items:center;}
+  .scale-badge{background:var(--ink);color:white;padding:3px 8px;
+    font-family:var(--mono);font-size:9px;letter-spacing:0.1em;}
+  .specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;}
+  .spec-block{background:var(--paper);border:1px solid rgba(0,0,0,0.1);padding:20px 24px;}
+  .spec-block h3{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:14px;
+    padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.08);}
+  .spec-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;
+    border-bottom:1px dotted rgba(0,0,0,0.06);}
+  .spec-row:last-child{border-bottom:none;}
+  .spec-key{color:var(--ink-mid);font-weight:300;}
+  .spec-val{font-family:var(--mono);font-size:11px;font-weight:500;}
+  .legend{background:var(--paper);border:1px solid rgba(0,0,0,0.1);
+    padding:20px 24px;margin-top:16px;grid-column:1/-1;}
+  .legend h3{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:14px;
+    padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.08);}
+  .legend-items{display:flex;flex-wrap:wrap;gap:16px 32px;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-mid);}
+  .legend-swatch{width:18px;height:12px;border:1px solid rgba(0,0,0,0.15);flex-shrink:0;}
+  .footer{margin-top:24px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.12);
+    display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;
+    letter-spacing:0.12em;color:var(--ink-light);text-transform:uppercase;}
+  .chip{border:1px solid rgba(0,0,0,0.15);padding:3px 10px;font-family:var(--mono);
+    font-size:9px;letter-spacing:0.1em;color:var(--ink-mid);text-transform:uppercase;
+    display:inline-block;margin:2px;}
+  .chip.dark{background:var(--ink);color:white;border-color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2 L26 8 L26 20 L14 26 L2 20 L2 8 Z" stroke="#1A1A1A" stroke-width="1.5" fill="none"/>
+        <path d="M14 2 L14 26 M2 8 L26 20 M26 8 L2 20" stroke="#1A1A1A" stroke-width="0.75" opacity="0.4"/>
+      </svg>
+      <div class="header-title">
+        <h1>Bathroom Module</h1>
+        <p>FrameFAST — Plug &amp; Play Series</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      Module No. 01 / 03<br>
+      Floor Plan + Isometric View<br>
+      Style: Japandi Minimal<br>
+      Rev.02 — Feb 2026
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- ══ FLOOR PLAN ══ -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>Floor Plan — Top View / ผัง Top-View ขนาด 3.0 × 3.0 เมตร</span>
+        <span class="scale-badge">SCALE 1:50</span>
+      </div>
+      <svg viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;">
+        <defs>
+          <pattern id="gridB" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0 L0 0 0 20" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="0.5"/>
+          </pattern>
+          <pattern id="terrazzoB" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#EDE8E1"/>
+            <rect width="20" height="20" fill="none" stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+          </pattern>
+          <pattern id="wetTileB" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
+            <rect width="15" height="15" fill="#D4E8E0"/>
+            <rect width="15" height="15" fill="none" stroke="rgba(100,160,150,0.3)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="440" height="440" fill="url(#gridB)"/>
+        <!-- Outer walls -->
+        <rect x="40" y="40" width="330" height="330" fill="none" stroke="#3A3A36" stroke-width="1.5"/>
+        <rect x="40" y="40"  width="330" height="15" fill="#3A3A36"/>
+        <rect x="40" y="355" width="330" height="15" fill="#3A3A36"/>
+        <rect x="40" y="40"  width="15"  height="330" fill="#3A3A36"/>
+        <rect x="355" y="40" width="15"  height="330" fill="#3A3A36"/>
+        <!-- Dry zone floor -->
+        <rect x="55" y="55" width="300" height="300" fill="url(#terrazzoB)"/>
+        <!-- Wet zone (back-right corner 90×90) -->
+        <rect x="255" y="55" width="100" height="100" fill="url(#wetTileB)"/>
+        <!-- Glass screen divider -->
+        <rect x="253" y="55" width="3" height="75" fill="#B8D4CC" stroke="#8BBCAF" stroke-width="0.5"/>
+        <rect x="255" y="128" width="100" height="3" fill="#B8D4CC" stroke="#8BBCAF" stroke-width="0.5"/>
+
+        <!-- SHOWER 90×90 in wet zone -->
+        <rect x="260" y="60" width="90" height="90" fill="#C4DDD6" stroke="#8BBCAF" stroke-width="1.2" rx="2"/>
+        <!-- Rain shower head -->
+        <circle cx="305" cy="105" r="16" fill="#E8F4F0" stroke="#8BBCAF" stroke-width="1.2"/>
+        <circle cx="305" cy="105" r="9"  fill="#D4EEE8" stroke="#8BBCAF" stroke-width="0.7"/>
+        <line x1="289" y1="105" x2="321" y2="105" stroke="#8BBCAF" stroke-width="0.6"/>
+        <line x1="305" y1="89"  x2="305" y2="121" stroke="#8BBCAF" stroke-width="0.6"/>
+        <text x="305" y="163" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#5A8A80">RAIN SHOWER</text>
+        <text x="305" y="172" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#7AADA3">90 × 90 cm</text>
+
+        <!-- VANITY 50×80 on left wall -->
+        <rect x="55" y="58" width="80" height="50" fill="#C8BFB0" stroke="#9A9080" stroke-width="1" rx="1"/>
+        <!-- Vessel basin -->
+        <circle cx="95" cy="83" r="22" fill="#E8E4DF" stroke="#9A9080" stroke-width="1"/>
+        <circle cx="95" cy="83" r="13" fill="#FDFCFB" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Faucet -->
+        <rect x="92" y="62" width="6" height="9" fill="#2A2A28" rx="1"/>
+        <!-- Mirror (on wall above) -->
+        <rect x="60" y="52" width="60" height="3" fill="#B0CAC5"/>
+        <text x="95" y="48" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9990">MIRROR 60×80</text>
+        <text x="95" y="120" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#7A7060">VANITY</text>
+        <text x="95" y="129" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">50 × 80 cm</text>
+
+        <!-- WC WALL-HUNG on left wall lower -->
+        <rect x="62" y="268" width="65" height="58" fill="#E8E4DF" stroke="#9A9080" stroke-width="1.2" rx="8"/>
+        <ellipse cx="94" cy="297" rx="28" ry="24" fill="#F5F3F0" stroke="#9A9080" stroke-width="0.8"/>
+        <line x1="67" y1="266" x2="67" y2="272" stroke="#9A9080" stroke-width="2"/>
+        <line x1="121" y1="266" x2="121" y2="272" stroke="#9A9080" stroke-width="2"/>
+        <text x="94" y="342" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#7A7060">WC WALL-HUNG</text>
+        <text x="94" y="351" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">36 × 65 cm</text>
+
+        <!-- TOWEL BAR -->
+        <rect x="162" y="350" width="70" height="5" fill="#3A3A36" rx="1"/>
+        <rect x="165" y="346" width="4" height="9" fill="#5A5A50"/>
+        <rect x="225" y="346" width="4" height="9" fill="#5A5A50"/>
+        <text x="197" y="362" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">TOWEL BAR</text>
+
+        <!-- BUILT-IN SHELF -->
+        <rect x="155" y="54" width="80" height="28" fill="#D8D0C4" stroke="#9A9080" stroke-width="0.75" rx="1"/>
+        <line x1="195" y1="54" x2="195" y2="82" stroke="#9A9080" stroke-width="0.5"/>
+        <text x="195" y="72" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#7A7060">SHELF</text>
+
+        <!-- DOOR on bottom wall -->
+        <rect x="198" y="355" width="88" height="15" fill="#EDE8E1"/>
+        <path d="M198,355 A88,88 0 0,1 286,355" fill="none" stroke="#9A9990" stroke-width="0.75" stroke-dasharray="3,2"/>
+        <rect x="195" y="337" width="3" height="20" fill="#3A3A36"/>
+        <rect x="283" y="350" width="3" height="18" fill="#3A3A36"/>
+        <text x="242" y="388" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#3A3A36" letter-spacing="0.1em">DOOR 80cm (OUTSWING)</text>
+
+        <!-- JOIN POINT -->
+        <rect x="33" y="145" width="7" height="80" fill="#B5895A" opacity="0.85" rx="1"/>
+        <text x="29" y="200" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#B5895A"
+              transform="rotate(-90 29 185)" letter-spacing="0.08em">JOIN POINT</text>
+
+        <!-- Wet/Dry zone labels -->
+        <text x="165" y="225" text-anchor="middle" font-family="DM Mono, monospace" font-size="8.5" fill="#9A9080" opacity="0.5" letter-spacing="0.12em">DRY ZONE</text>
+        <text x="165" y="236" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#9A9080" opacity="0.5">~5.5 m²</text>
+        <text x="305" y="84" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#5A8A80" letter-spacing="0.08em">WET ZONE</text>
+
+        <!-- DIMENSION LINES -->
+        <line x1="40" y1="405" x2="370" y2="405" stroke="#555550" stroke-width="0.75"/>
+        <line x1="40" y1="400" x2="40"  y2="410" stroke="#555550" stroke-width="0.75"/>
+        <line x1="370" y1="400" x2="370" y2="410" stroke="#555550" stroke-width="0.75"/>
+        <text x="205" y="420" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#555550" letter-spacing="0.08em">3,000 mm</text>
+        <line x1="408" y1="40"  x2="408" y2="370" stroke="#555550" stroke-width="0.75"/>
+        <line x1="403" y1="40"  x2="413" y2="40"  stroke="#555550" stroke-width="0.75"/>
+        <line x1="403" y1="370" x2="413" y2="370" stroke="#555550" stroke-width="0.75"/>
+        <text x="430" y="210" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#555550"
+              transform="rotate(90 430 205)" letter-spacing="0.08em">3,000 mm</text>
+
+        <!-- North arrow -->
+        <g transform="translate(385,375)">
+          <circle cx="0" cy="0" r="12" fill="none" stroke="#9A9990" stroke-width="0.75"/>
+          <path d="M0,-9 L4,4 L0,1 L-4,4 Z" fill="#3A3A36"/>
+          <text x="0" y="-12" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#3A3A36">N</text>
+          <text x="0" y="7"  text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#555550">S</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ══ ISOMETRIC VIEW — rebuilt with strict iso math ══
+         SAME SYSTEM as Module 02 & 03:
+         TW=42, TH=21, H=70  (2.5m)
+         origin (215,330)
+         iso(x,z) = (215 + x*42 - z*42,  330 + x*21 + z*21)
+         height offset h_px = h_m/2.5 * 70
+
+         Room corners:
+           P00=(215,330)  P30=(341,393)  P03=(89,393)  P33=(215,456)
+         Ceiling (H=70):
+           C00=(215,260)  C30=(341,323)  C03=(89,323)  C33=(215,386)
+
+         Layout in iso coords:
+         - Vanity counter: x=0 (left wall), z=0.2..1.1, depth into room 0.55 (x=0..0.55)
+         - Mirror: on left wall (x=0 surface), z=0.3..1.0, h=130..210cm
+         - Shelf: on back-z wall, x=0.5..1.5, h=150..185cm
+         - WC: x=0..0.7, z=2.0..2.65, h=0..40cm (wall-hung, gap under)
+         - Shower wet zone: x=2.0..3.0, z=0..1.0 (back-right corner)
+         - Glass screen: x=2.0, z=0..1.0 (vertical divider) + top at z=1.0
+         - Rain shower head: at x=2.5, z=0.5, h=220cm
+         - Towel bar: on front-right face (z=0), x=1.3..1.9, h=110cm
+         - Door: z=0 face, x=1.3..2.1
+
+         Key iso points:
+         iso(0,0.2)  = (215-8.4,  330+4.2)  = (207, 334)
+         iso(0,1.1)  = (215-46.2, 330+23.1) = (169, 353)
+         iso(0.55,0.2)= (215+23.1-8.4,330+11.55+4.2) = (230,346)
+         iso(0.55,1.1)= (215+23.1-46.2,330+11.55+23.1)=(192,365)
+         iso(0,2.0)  = (215-84,   330+42)   = (131, 372)
+         iso(0,2.65) = (215-111.3,330+55.65)= (104, 386)
+         iso(0.7,2.0) = (215+29.4-84,330+14.7+42) = (160,387)
+         iso(0.7,2.65)= (215+29.4-111.3,330+14.7+55.65)=(133,400)
+         iso(2.0,0)  = (215+84,   330+42)   = (299, 372)
+         iso(2.0,1.0)= (215+84-42,330+42+21)= (257, 393)
+         iso(3.0,0)  = (341, 393)
+         iso(3.0,1.0)= (257+42,393+21)=(... wait:
+           iso(3,1)=(215+126-42,330+63+21)=(299,414)
+         iso(2.0,0.55)= (215+84-23.1,330+42+11.55)=(276,384)
+    ══ -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>Isometric View — 3D Visualization</span>
+        <span class="scale-badge">ISO VIEW</span>
+      </div>
+
+      <svg viewBox="0 0 470 490" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;background:linear-gradient(155deg,#F2EFE9 0%,#E8E2D8 100%);">
+        <defs>
+          <linearGradient id="floorTerr" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E8E0D4"/>
+            <stop offset="100%" stop-color="#D8D0C4"/>
+          </linearGradient>
+          <linearGradient id="floorWet" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C4DDD6"/>
+            <stop offset="100%" stop-color="#B4CEC8"/>
+          </linearGradient>
+          <linearGradient id="wallBackB" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F0ECE5"/>
+            <stop offset="100%" stop-color="#DDD8D0"/>
+          </linearGradient>
+          <linearGradient id="wallRightB" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#E4E0D8"/>
+            <stop offset="100%" stop-color="#D4CEC6"/>
+          </linearGradient>
+          <linearGradient id="wetWallTile" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#C8E0D8"/>
+            <stop offset="100%" stop-color="#B4D0C8"/>
+          </linearGradient>
+          <linearGradient id="vanityTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#DEDAD4"/>
+            <stop offset="100%" stop-color="#CEC8C0"/>
+          </linearGradient>
+          <linearGradient id="vanityFace" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#C0B8A8"/>
+            <stop offset="100%" stop-color="#A8A090"/>
+          </linearGradient>
+          <linearGradient id="glassScrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C0D8D4" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#A0C4C0" stop-opacity="0.35"/>
+          </linearGradient>
+          <linearGradient id="ceilB" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F5F2EE" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#E8E4DC" stop-opacity="0.4"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Ground shadow -->
+        <ellipse cx="215" cy="465" rx="140" ry="14" fill="rgba(0,0,0,0.07)"/>
+
+        <!-- ══ LAYER 1: FLOOR ══ -->
+        <!-- Dry zone floor: full room P00,P30,P33,P03 -->
+        <polygon points="215,330 341,393 215,456 89,393"
+                 fill="url(#floorTerr)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Floor tile grid lines -->
+        <g stroke="rgba(140,130,115,0.18)" stroke-width="0.5">
+          <!-- z=1 line: iso(0,1)=(173,351) → iso(3,1)=(299,414) -->
+          <line x1="173" y1="351" x2="299" y2="414"/>
+          <!-- z=2 line: iso(0,2)=(131,372) → iso(3,2)=(257,435) -->
+          <line x1="131" y1="372" x2="257" y2="435"/>
+          <!-- x=1 line: iso(1,0)=(257,351) → iso(1,3)=(131,414) -->
+          <line x1="257" y1="351" x2="131" y2="414"/>
+          <!-- x=2 line: iso(2,0)=(299,372) → iso(2,3)=(173,435) -->
+          <line x1="299" y1="372" x2="173" y2="435"/>
+        </g>
+
+        <!-- Wet zone floor overlay (x=2..3, z=0..1) -->
+        <!-- iso(2,0)=(299,372) iso(3,0)=(341,393) iso(3,1)=(299,414) iso(2,1)=(257,393) -->
+        <polygon points="299,372 341,393 299,414 257,393"
+                 fill="url(#floorWet)" stroke="rgba(100,160,150,0.3)" stroke-width="0.5"/>
+        <!-- Wet zone tile grid -->
+        <g stroke="rgba(100,160,150,0.25)" stroke-width="0.5">
+          <line x1="320" y1="382" x2="278" y2="403"/>
+          <line x1="299" y1="393" x2="257" y2="414"/>
+        </g>
+
+        <!-- ══ LAYER 2: BACK WALLS ══ -->
+        <!-- Back-Z wall (z=3): 89,393 → 215,456 → 215,386 → 89,323 -->
+        <polygon points="89,393 215,456 215,386 89,323"
+                 fill="url(#wallBackB)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Back-X wall (x=3): 341,393 → 215,456 → 215,386 → 341,323 -->
+        <polygon points="341,393 215,456 215,386 341,323"
+                 fill="url(#wallRightB)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Wet zone wall tile (x=3 face, z=0..1):
+             Right wall section: iso(3,0)=(341,393) → iso(3,1)=(299,414) → C(299,344) → C(341,323) -->
+        <polygon points="341,393 299,414 299,344 341,323"
+                 fill="url(#wetWallTile)" stroke="#8BBCAF" stroke-width="0.8"/>
+        <!-- Wet zone wall tile (z=0 face, x=2..3):
+             Front face section at z=0, x=2..3:
+             iso(2,0)=(299,372) → iso(3,0)=(341,393) → C(341,323) → C(299,302) -->
+        <polygon points="299,372 341,393 341,323 299,302"
+                 fill="url(#wetWallTile)" stroke="#8BBCAF" stroke-width="0.8"/>
+        <!-- Tile grid on wet wall -->
+        <g stroke="#8BBCAF" stroke-width="0.4" opacity="0.3">
+          <!-- Horizontal bands: back-x wet wall -->
+          <line x1="341" y1="353" x2="299" y2="374"/>
+          <line x1="341" y1="373" x2="299" y2="394"/>
+          <!-- Vertical: -->
+          <line x1="320" y1="323" x2="320" y2="414"/>
+        </g>
+
+        <!-- ══ LAYER 3: SHELF on back wall ══
+             Shelf at x=0.5..1.5, h=150..185cm on z=3 (back-z wall surface)
+             h150=42px, h185=52px
+             iso(0.5,3)=(131,414): shelf bottom at y=414-42=372, top at y=414-52=362
+             iso(1.5,3)=(173,435): shelf bottom at y=435-42=393, top at y=435-52=383
+        -->
+        <!-- Shelf face on back-z wall: -->
+        <polygon points="131,362 173,383 173,393 131,372"
+                 fill="#D8D0C0" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Shelf top: -->
+        <!-- shelf sits on the wall surface, so it's the wall tile itself + a protruding lip
+             We show the shelf face (the front of the shelf that sticks into the room a bit) -->
+        <!-- Shelf items: small bottle shapes -->
+        <rect x="136" y="355" width="6" height="14" fill="#B8D0CC" rx="1" transform="skewX(-5) skewY(-2)" opacity="0.8"/>
+        <rect x="146" y="357" width="5" height="12" fill="#D4C0B0" rx="1" transform="skewX(-5) skewY(-2)" opacity="0.8"/>
+        <rect x="158" y="360" width="6" height="10" fill="#C8D8D0" rx="1" transform="skewX(-5) skewY(-2)" opacity="0.7"/>
+
+        <!-- ══ LAYER 4: GLASS SCREEN DIVIDER ══
+             Screen at x=2.0, runs from z=0 to z=1.0, full height H=70
+             iso(2,0)=(299,372), iso(2,1)=(257,393)
+             Top: (299,302), (257,323)
+             This is a vertical face perpendicular to x-axis
+        -->
+        <!-- Glass screen (x=2.0 plane, z=0..1, y=0..H) -->
+        <polygon points="299,302 257,323 257,393 299,372"
+                 fill="url(#glassScrGrad)" stroke="#8BBCAF" stroke-width="1"/>
+        <!-- Glass screen frame edges -->
+        <line x1="299" y1="302" x2="299" y2="372" stroke="#4A6065" stroke-width="1.2"/>
+        <line x1="257" y1="323" x2="257" y2="393" stroke="#4A6065" stroke-width="1.2"/>
+        <!-- Glass reflection line -->
+        <line x1="295" y1="304" x2="253" y2="325" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+        <line x1="293" y1="318" x2="259" y2="337" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+
+        <!-- Horizontal glass screen bottom (z=1.0 plane, x=2..3, thin)
+             iso(2,1)=(257,393) iso(3,1)=(299,414) top at h=5px
+             (257,388) (299,409) (299,414) (257,393) -->
+        <polygon points="257,388 299,409 299,414 257,393"
+                 fill="url(#glassScrGrad)" stroke="#8BBCAF" stroke-width="0.8"/>
+
+        <!-- ══ LAYER 5: VANITY COUNTER ══
+             Counter: x=0..0.55, z=0.2..1.1, h=90cm(25px)
+             Key floor coords:
+             iso(0,0.2)=(207,334)   iso(0.55,0.2)=(230,346)
+             iso(0.55,1.1)=(192,365) iso(0,1.1)=(169,353)
+             Counter top (y-25):
+             (207,309) (230,321) (192,340) (169,328)
+        -->
+        <!-- Counter top face -->
+        <polygon points="207,309 230,321 192,340 169,328"
+                 fill="url(#vanityTop)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Counter front face (z=0.2 surface):
+             top: (207,309)→(230,321)  bottom: (207,334)→(230,346) -->
+        <polygon points="207,309 230,321 230,346 207,334"
+                 fill="url(#vanityFace)" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Wood grain on front face -->
+        <g stroke="#A89868" stroke-width="0.5" opacity="0.35">
+          <line x1="207" y1="318" x2="230" y2="330"/>
+          <line x1="207" y1="327" x2="230" y2="339"/>
+        </g>
+        <!-- Counter right face (x=0.55 surface):
+             top: (230,321)→(192,340)  bottom: (230,346)→(192,365) -->
+        <polygon points="230,321 192,340 192,365 230,346"
+                 fill="#B0A898" stroke="#9A8870" stroke-width="0.7"/>
+
+        <!-- Cabinet doors under counter (front face x=0..0.55, z=0.2) -->
+        <!-- Already covered by counter front face — add door line -->
+        <line x1="218" y1="309" x2="218" y2="339" stroke="#9A9080" stroke-width="0.4" opacity="0.5"/>
+
+        <!-- VESSEL BASIN on counter top -->
+        <!-- Basin sits at x~0.22, z~0.65, on top of counter (h=90cm, center at h=100cm) -->
+        <!-- iso(0.22,0.65) = (215+9.24-27.3, 330+4.62+13.65) = (197,348) at floor
+             at h=90: y=348-25=323, so center = (197,318) approximately on counter top -->
+        <!-- Basin ellipse (iso projected) -->
+        <ellipse cx="199" cy="325" rx="16" ry="9" fill="#E8E4DF" stroke="#9A9080" stroke-width="1"/>
+        <ellipse cx="199" cy="324" rx="16" ry="9" fill="#FDFCFB" stroke="#9A9080" stroke-width="0.8"/>
+        <ellipse cx="199" cy="324" rx="9"  ry="5" fill="#F5F2F0" stroke="#D0C8BC" stroke-width="0.5"/>
+
+        <!-- Faucet (matte black, on counter) -->
+        <line x1="199" y1="314" x2="199" y2="305" stroke="#2A2A28" stroke-width="1.8"/>
+        <line x1="195" y1="305" x2="203" y2="305" stroke="#2A2A28" stroke-width="1.8"/>
+        <ellipse cx="195" cy="305" rx="2" ry="1" fill="#2A2A28"/>
+
+        <!-- MIRROR on left wall (x=0 surface, z=0.3..1.0, h=130..210cm)
+             h130=36px, h210=59px
+             iso(0,0.3)=(215-12.6,330+6.3)=(202,336) at floor
+             iso(0,1.0)=(173,351) at floor
+             Mirror bottom at h=130: (202,336-36)=(202,300), (173,351-36)=(173,315)
+             Mirror top at h=210:   (202,336-59)=(202,277), (173,351-59)=(173,292)
+        -->
+        <!-- Mirror face (on x=0 left wall surface) -->
+        <polygon points="202,277 173,292 173,315 202,300"
+                 fill="#D4E0DC" stroke="#9A9080" stroke-width="1" opacity="0.9"/>
+        <!-- Mirror reflection -->
+        <polygon points="203,278 175,293 175,314 203,299"
+                 fill="#E8F4F0" stroke="none" opacity="0.45"/>
+        <line x1="204" y1="280" x2="178" y2="294" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+        <!-- Mirror frame -->
+        <polygon points="202,277 173,292 173,315 202,300"
+                 fill="none" stroke="#3A3A36" stroke-width="1.2"/>
+
+        <!-- ══ LAYER 6: RAIN SHOWER HEAD ══
+             Shower head at x=2.5, z=0.5, h=220cm(62px)
+             iso(2.5,0.5) = (215+105-21,330+52.5+10.5) = (299,393) at floor
+             at h=220: y=393-62=331 → head center at (299,331)
+             Arm along back wall (x=3 wall surface) bends to (299,331)
+        -->
+        <!-- Shower arm from wall to head -->
+        <line x1="320" y1="326" x2="299" y2="331" stroke="#3A3A36" stroke-width="1.8"/>
+        <line x1="320" y1="309" x2="320" y2="326" stroke="#3A3A36" stroke-width="1.8"/>
+        <!-- Rain shower head (ellipse iso) -->
+        <ellipse cx="299" cy="331" rx="18" ry="9" fill="#D8D0C4" stroke="#3A3A36" stroke-width="1.2"/>
+        <ellipse cx="299" cy="329" rx="18" ry="9" fill="#E8E4DF" stroke="#3A3A36" stroke-width="0.8"/>
+        <!-- Shower head holes grid -->
+        <g fill="none" stroke="#9A9080" stroke-width="0.4" opacity="0.5">
+          <circle cx="292" cy="329" r="1.5"/>
+          <circle cx="299" cy="327" r="1.5"/>
+          <circle cx="306" cy="331" r="1.5"/>
+          <circle cx="295" cy="333" r="1.5"/>
+          <circle cx="303" cy="333" r="1.5"/>
+        </g>
+        <!-- Water drops (faint lines) -->
+        <g stroke="#A8C8C0" stroke-width="0.8" opacity="0.5">
+          <line x1="292" y1="334" x2="290" y2="346"/>
+          <line x1="299" y1="336" x2="297" y2="350"/>
+          <line x1="306" y1="338" x2="304" y2="352"/>
+        </g>
+
+        <!-- ══ LAYER 7: WC WALL-HUNG ══
+             WC at x=0..0.65, z=2.0..2.65, h=40cm(11px) wall-hung → gap from floor
+             Wall-hung: h starts at 40cm(11px), top at 90cm(25px)
+             iso(0,2.0)=(131,372) at floor → at h=40: (131,361), at h=90: (131,347)
+             iso(0.65,2.0)=(158,385) at floor → h=40:(158,374), h=90:(158,360)
+             iso(0.65,2.65)=(131,398) at floor → h=40:(131,387), h=90:(131,373)
+             iso(0,2.65)=(104,385) at floor → h=40:(104,374), h=90:(104,360)
+        -->
+        <!-- WC body: top face at h=90, front face at z=2.0 -->
+        <!-- Front face (z=2.0): top(131,347)→(158,360) bottom(131,361)→(158,374) -->
+        <polygon points="131,347 158,360 158,374 131,361"
+                 fill="#D8D4CE" stroke="#9A9080" stroke-width="0.7" rx="4"/>
+        <!-- Side face (x=0.65): top(158,360)→(131,373) bottom(158,374)→(131,387) -->
+        <polygon points="158,360 131,373 131,387 158,374"
+                 fill="#C8C4BE" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Top face (seat): (131,347)(158,360)(131,373)(104,360) -->
+        <polygon points="131,347 158,360 131,373 104,360"
+                 fill="#E0DCD8" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Seat oval detail -->
+        <ellipse cx="131" cy="360" rx="20" ry="11" fill="#EEEBE8" stroke="#C8C4BE" stroke-width="0.6"/>
+        <!-- Wall bracket (mounted on x=0 wall) -->
+        <line x1="131" y1="345" x2="131" y2="361" stroke="#9A9080" stroke-width="1.5"/>
+        <line x1="104" y1="358" x2="104" y2="374" stroke="#9A9080" stroke-width="1.5"/>
+        <!-- Gap under WC (wall-hung, shows floor below) -->
+        <!-- Just let floor show through since WC starts at h=40 -->
+
+        <!-- ══ LAYER 8: TOWEL BAR ══
+             On back-z wall, x=0.8..1.4, h=110cm(31px)
+             iso(0.8,3)=(131+...) let me compute:
+             iso(0.8,3)=(215+33.6-126,330+16.8+63)=(123,410) at floor → h=110: y=379
+             iso(1.4,3)=(215+58.8-126,330+29.4+63)=(148,422) at floor → h=110: y=391
+        -->
+        <!-- Bar rod -->
+        <line x1="123" y1="379" x2="148" y2="391" stroke="#2A2A28" stroke-width="2.2"/>
+        <!-- End caps -->
+        <circle cx="123" cy="379" r="2.5" fill="#3A3A36"/>
+        <circle cx="148" cy="391" r="2.5" fill="#3A3A36"/>
+        <!-- Towel hanging (simple drape shape) -->
+        <path d="M128,379 Q127,392 130,395 Q133,398 136,395 Q139,392 138,379"
+              fill="#E8E0D0" stroke="#C8C0B0" stroke-width="0.6" opacity="0.8"/>
+
+        <!-- ══ LAYER 9: NEAR WALLS (front faces) ══ -->
+
+        <!-- Front-right wall (z=0): door opening at x=1.3..2.1
+             Left solid: x=0..1.3 → iso(1.3,0)=(215+54.6,330+27.3)=(270,357)
+             Right solid: x=2.1..3 → iso(2.1,0)=(215+88.2,330+44.1)=(303,374)
+             But wet zone covers x=2..3 so the right solid is very thin
+        -->
+        <!-- Left solid section of z=0 wall -->
+        <polygon points="215,330 270,357 270,287 215,260"
+                 fill="rgba(240,236,228,0.93)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Door opening (x=1.3..2.1, z=0)
+             iso(1.3,0)=(270,357), iso(2.1,0)=(303,374)
+             Door frame top (h=220cm=62px): (270,295), (303,312) -->
+        <!-- Door panel -->
+        <polygon points="270,295 303,312 303,374 270,357"
+                 fill="#E8E2D8" stroke="#A09080" stroke-width="1"/>
+        <!-- Door panel inset -->
+        <polygon points="273,298 300,313 300,371 273,356"
+                 fill="#EEE8E0" stroke="#C8C0B0" stroke-width="0.5"/>
+        <!-- Door panel groove -->
+        <polygon points="276,305 297,316 297,360 276,349"
+                 fill="none" stroke="#C8C0B0" stroke-width="0.5"/>
+        <!-- Handle -->
+        <ellipse cx="294" cy="333" rx="2.5" ry="1.5" fill="#2A2A28"/>
+        <line x1="293" y1="333" x2="293" y2="341" stroke="#2A2A28" stroke-width="1.2"/>
+
+        <!-- Right solid section (x=2.1..3 on z=0) — wet zone wall, tiny strip -->
+        <polygon points="303,374 341,393 341,323 303,302"
+                 fill="rgba(200,224,220,0.7)" stroke="#8BBCAF" stroke-width="0.8"/>
+        <!-- Wall tile lines on this section -->
+        <g stroke="#8BBCAF" stroke-width="0.4" opacity="0.3">
+          <line x1="303" y1="322" x2="341" y2="343"/>
+          <line x1="303" y1="342" x2="341" y2="363"/>
+          <line x1="303" y1="362" x2="341" y2="383"/>
+        </g>
+
+        <!-- Left wall (x=0): P00→P03→C03→C00 -->
+        <polygon points="215,330 89,393 89,323 215,260"
+                 fill="rgba(235,230,222,0.92)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Subtle texture -->
+        <g stroke="#C8C4BC" stroke-width="0.35" opacity="0.25">
+          <line x1="215" y1="290" x2="89" y2="353"/>
+          <line x1="205" y1="277" x2="115" y2="320"/>
+        </g>
+
+        <!-- ══ CEILING ══ -->
+        <polygon points="215,260 341,323 215,386 89,323"
+                 fill="url(#ceilB)" stroke="rgba(154,144,128,0.35)" stroke-width="0.6" opacity="0.55"/>
+
+        <!-- Join point -->
+        <rect x="85" y="373" width="5" height="50" fill="#B5895A" opacity="0.8" rx="1"/>
+
+        <!-- ══ CALLOUT LABELS ══ -->
+        <line x1="199" y1="328" x2="140" y2="295" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="85" y="293" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">VESSEL BASIN</text>
+
+        <line x1="187" y1="307" x2="95" y2="270" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="10" y="268" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">ENG.STONE COUNTER</text>
+
+        <line x1="188" y1="294" x2="100" y2="245" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="15" y="243" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">MIRROR</text>
+
+        <line x1="131" y1="358" x2="75" y2="340" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="10" y="338" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">WC WALL-HUNG</text>
+
+        <line x1="299" y1="336" x2="385" y2="295" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="387" y="293" font-family="DM Mono, monospace" font-size="7.5" fill="#5A8A80">RAIN SHOWER Ø200</text>
+
+        <line x1="278" y1="340" x2="385" y2="315" stroke="#8BBCAF" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="387" y="318" font-family="DM Mono, monospace" font-size="7.5" fill="#5A8A80">GLASS SCREEN</text>
+
+        <line x1="136" y1="384" x2="75" y2="400" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="10" y="403" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">TOWEL BAR</text>
+
+        <!-- Title -->
+        <text x="215" y="20" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#9A9990" letter-spacing="0.14em">ISOMETRIC VIEW — MODULE 01 / BATHROOM</text>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- SPECS -->
+  <div class="specs-grid">
+    <div class="spec-block">
+      <h3>Module Size</h3>
+      <div class="spec-row"><span class="spec-key">Width</span><span class="spec-val">3,000 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Depth</span><span class="spec-val">3,000 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Wall Thickness</span><span class="spec-val">75 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Ceiling Height</span><span class="spec-val">2,500 mm</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Sanitary Fixtures</h3>
+      <div class="spec-row"><span class="spec-key">WC (wall-hung)</span><span class="spec-val">360 × 650</span></div>
+      <div class="spec-row"><span class="spec-key">Vanity basin (vessel)</span><span class="spec-val">Ø 500</span></div>
+      <div class="spec-row"><span class="spec-key">Counter top</span><span class="spec-val">500 × 800</span></div>
+      <div class="spec-row"><span class="spec-key">Mirror</span><span class="spec-val">600 × 800</span></div>
+      <div class="spec-row"><span class="spec-key">Shower zone</span><span class="spec-val">900 × 900</span></div>
+      <div class="spec-row"><span class="spec-key">Rain shower Ø</span><span class="spec-val">200 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Door clear width</span><span class="spec-val">800 mm</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Zones</h3>
+      <div class="spec-row"><span class="spec-key">Dry zone</span><span class="spec-val">~5.5 m²</span></div>
+      <div class="spec-row"><span class="spec-key">Wet zone</span><span class="spec-val">~0.81 m²</span></div>
+      <h3 style="margin-top:14px">Brand Reference</h3>
+      <div class="spec-row"><span class="spec-key">Sanitary</span><span class="spec-val">COTTO / A.Std</span></div>
+      <div class="spec-row"><span class="spec-key">Tile</span><span class="spec-val">Campana / Cotto</span></div>
+      <div class="spec-row"><span class="spec-key">Fittings</span><span class="spec-val">Grohe / Häfele</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Materials Palette</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#EDE8E1;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">TERRAZZO<br>LIGHT</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#C4DDD6;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">WET ZONE<br>TILE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#C8BFB0;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">ENG.<br>STONE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:rgba(192,216,212,0.6);border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">FRAMELESS<br>GLASS</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#2A2A28;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">MATTE<br>BLACK</span>
+        </div>
+      </div>
+      <span class="chip dark">Matte Black</span>
+      <span class="chip">Frameless Glass</span>
+      <span class="chip">PVC Ceiling</span>
+      <span class="chip">WPC Panel</span>
+    </div>
+
+    <div class="legend">
+      <h3>Legend</h3>
+      <div class="legend-items">
+        <div class="legend-item"><div class="legend-swatch" style="background:#EDE8E1"></div>Dry Zone Floor (terrazzo tile)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#C4DDD6"></div>Wet Zone Floor (anti-slip tile)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#C8BFB0"></div>Vanity Counter (eng. stone)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#E8E4DF"></div>Sanitary fixtures (white)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#3A3A36"></div>Structural wall (100 mm)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#B5895A"></div>Module Join Point (to Nordic)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(192,216,212,0.6)"></div>Frameless glass screen</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#D8D0C0"></div>Built-in storage shelf</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>FrameFAST</span>
+    <span>Module-01 / Bathroom / Floor Plan + Isometric View</span>
+    <span>Rev.02 — Feb 2026</span>
+  </div>
+</div>
+</body>
+</html>

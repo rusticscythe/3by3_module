@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameFAST — Outdoor Living Module 03</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@200;300;400;500&display=swap');
+  :root {
+    --bg:#F7F5F2; --paper:#FDFCFB; --ink:#1A1A1A; --ink-mid:#555550;
+    --ink-light:#9A9990; --wall:#3A3A36; --join:#B5895A;
+    --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);padding:40px;}
+  .page-wrap{max-width:1400px;margin:0 auto;}
+  .header{display:flex;justify-content:space-between;align-items:flex-end;
+    padding-bottom:20px;border-bottom:1px solid var(--ink);margin-bottom:32px;}
+  .header-title h1{font-size:36px;font-weight:200;letter-spacing:-0.01em;}
+  .header-title p{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+    color:var(--ink-light);text-transform:uppercase;margin-top:4px;}
+  .header-meta{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;
+    color:var(--ink-mid);text-align:right;line-height:1.8;text-transform:uppercase;}
+  .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+  .panel{background:var(--paper);border:1px solid rgba(0,0,0,0.1);padding:28px;}
+  .panel-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:20px;
+    display:flex;justify-content:space-between;align-items:center;}
+  .scale-badge{background:var(--ink);color:white;padding:3px 8px;
+    font-family:var(--mono);font-size:9px;letter-spacing:0.1em;}
+  .specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;}
+  .spec-block{background:var(--paper);border:1px solid rgba(0,0,0,0.1);padding:20px 24px;}
+  .spec-block h3{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:14px;
+    padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.08);}
+  .spec-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;
+    border-bottom:1px dotted rgba(0,0,0,0.06);}
+  .spec-row:last-child{border-bottom:none;}
+  .spec-key{color:var(--ink-mid);font-weight:300;}
+  .spec-val{font-family:var(--mono);font-size:11px;font-weight:500;}
+  .legend{background:var(--paper);border:1px solid rgba(0,0,0,0.1);
+    padding:20px 24px;margin-top:16px;grid-column:1/-1;}
+  .legend h3{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:14px;
+    padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.08);}
+  .legend-items{display:flex;flex-wrap:wrap;gap:16px 32px;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-mid);}
+  .legend-swatch{width:18px;height:12px;border:1px solid rgba(0,0,0,0.15);flex-shrink:0;}
+  .footer{margin-top:24px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.12);
+    display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;
+    letter-spacing:0.12em;color:var(--ink-light);text-transform:uppercase;}
+  .chip{border:1px solid rgba(0,0,0,0.15);padding:3px 10px;font-family:var(--mono);
+    font-size:9px;letter-spacing:0.1em;color:var(--ink-mid);text-transform:uppercase;
+    display:inline-block;margin:2px;}
+  .chip.dark{background:var(--ink);color:white;border-color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2 L26 8 L26 20 L14 26 L2 20 L2 8 Z" stroke="#1A1A1A" stroke-width="1.5" fill="none"/>
+        <path d="M14 2 L14 26 M2 8 L26 20 M26 8 L2 20" stroke="#1A1A1A" stroke-width="0.75" opacity="0.4"/>
+      </svg>
+      <div class="header-title">
+        <h1>Outdoor Living Module</h1>
+        <p>FrameFAST — Plug &amp; Play Series</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      Module No. 03 / 03<br>
+      Floor Plan + Isometric View<br>
+      Style: Japandi Minimal<br>
+      Rev.01 — Feb 2026
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- ══ FLOOR PLAN ══ -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>Floor Plan — Top View / ผัง Top-View ขนาด 3.0 × 3.0 เมตร</span>
+        <span class="scale-badge">SCALE 1:50</span>
+      </div>
+
+      <svg viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;">
+        <defs>
+          <pattern id="gridO" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0 L0 0 0 20" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="0.5"/>
+          </pattern>
+          <!-- Deck wood pattern -->
+          <pattern id="deck" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+            <rect width="18" height="18" fill="#C8B898"/>
+            <line x1="0" y1="0" x2="18" y2="0" stroke="#B8A888" stroke-width="1" opacity="0.4"/>
+            <line x1="0" y1="9" x2="18" y2="9" stroke="#D0C0A0" stroke-width="0.4" opacity="0.3"/>
+          </pattern>
+          <!-- Concrete tile -->
+          <pattern id="concO" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#E0D8CE"/>
+            <rect width="20" height="20" fill="none" stroke="rgba(140,130,115,0.2)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        <rect width="440" height="440" fill="url(#gridO)"/>
+
+        <!-- Outer walls -->
+        <rect x="40" y="40" width="330" height="330" fill="none" stroke="#3A3A36" stroke-width="1.5"/>
+        <rect x="40" y="40"  width="330" height="15" fill="#3A3A36"/>
+        <rect x="40" y="355" width="330" height="15" fill="#3A3A36"/>
+        <rect x="40" y="40"  width="15"  height="330" fill="#3A3A36"/>
+        <rect x="355" y="40" width="15"  height="330" fill="#3A3A36"/>
+
+        <!-- ── ZONES ──
+             Laundry zone: back-right corner, 150×120 (x:205..355, y:55..175)
+             Sitting zone:  remaining ~150×300 + overlap
+             Bi-fold door: entire bottom wall opens (right 2/3 of front)
+        -->
+
+        <!-- Full floor first -->
+        <rect x="55" y="55" width="300" height="300" fill="url(#concO)"/>
+
+        <!-- Deck / sitting zone (left + center) - composite deck floor -->
+        <rect x="55" y="55" width="185" height="300" fill="url(#deck)"/>
+
+        <!-- Laundry zone fill (right back) -->
+        <rect x="240" y="55" width="115" height="140" fill="#EDE8E0" stroke="#C0B8A8" stroke-width="0.75" stroke-dasharray="5,2"/>
+
+        <!-- ── BI-FOLD DOOR (bottom wall, full 240px width) ──
+             Opening from x=105 to x=345 (240px = 240cm when opened fully)
+             Panels fold to sides, shown as folded accordion lines
+        -->
+        <!-- Door gap in bottom wall -->
+        <rect x="105" y="355" width="240" height="15" fill="url(#deck)"/>
+        <!-- Bi-fold panel lines (accordion, 4 panels each 60cm) -->
+        <!-- Left pair of panels (folded toward left wall) -->
+        <line x1="105" y1="355" x2="135" y2="330" stroke="#4A4A48" stroke-width="1.2"/>
+        <line x1="135" y1="330" x2="165" y2="355" stroke="#4A4A48" stroke-width="1.2"/>
+        <!-- Right pair of panels (folded toward right wall) -->
+        <line x1="285" y1="355" x2="315" y2="330" stroke="#4A4A48" stroke-width="1.2"/>
+        <line x1="315" y1="330" x2="345" y2="355" stroke="#4A4A48" stroke-width="1.2"/>
+        <!-- Center open gap -->
+        <rect x="162" y="350" width="126" height="10" fill="none" stroke="#4A4A48" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.4"/>
+        <!-- Dashed open-space indicator -->
+        <path d="M 162,350 Q 225,320 288,350" fill="none" stroke="#9A9990" stroke-width="0.75" stroke-dasharray="4,2"/>
+        <text x="225" y="343" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9990">OPEN TO GARDEN</text>
+
+        <!-- ── LAUNDRY ZONE CONTENTS ── -->
+
+        <!-- Laundry sink 50×40cm: x=295..345, y=65..105 -->
+        <rect x="295" y="65" width="50" height="40" fill="#C8C4BC" stroke="#9A9080" stroke-width="0.8" rx="2"/>
+        <rect x="299" y="68" width="42" height="32" fill="#B8B4AC" stroke="#9A9080" stroke-width="0.5" rx="2"/>
+        <circle cx="320" cy="84" r="5" fill="#9A9080" stroke="#8A8070" stroke-width="0.5"/>
+        <!-- Faucet -->
+        <rect x="317" y="63" width="6" height="8" fill="#2A2A28" rx="1"/>
+        <rect x="313" y="63" width="14" height="3" fill="#2A2A28" rx="1"/>
+        <text x="320" y="117" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">LAUNDRY SINK</text>
+        <text x="320" y="126" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">50 × 40 cm</text>
+
+        <!-- Washing machine 60×60cm: x=245..305, y=65..125 -->
+        <rect x="245" y="65" width="55" height="55" fill="#D8D4CC" stroke="#9A9080" stroke-width="0.8" rx="3"/>
+        <!-- Front-load porthole -->
+        <circle cx="272" cy="92" r="20" fill="#C8C4BC" stroke="#9A9080" stroke-width="0.8"/>
+        <circle cx="272" cy="92" r="15" fill="#B8E0D8" stroke="#8BBCAF" stroke-width="0.6" opacity="0.7"/>
+        <circle cx="272" cy="92" r="8" fill="#9AC8C0" opacity="0.5"/>
+        <!-- Control panel strip -->
+        <rect x="245" y="65" width="55" height="10" fill="#C0BCBA" stroke="#9A9080" stroke-width="0.5"/>
+        <circle cx="255" cy="70" r="3" fill="#3A3A36"/>
+        <circle cx="265" cy="70" r="2" fill="#9A9080"/>
+        <text x="272" y="136" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">WASHING MACHINE</text>
+        <text x="272" y="145" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">60 × 60 cm</text>
+
+        <!-- Overhead pulley rail (dashed line across laundry zone top) -->
+        <line x1="240" y1="100" x2="355" y2="100" stroke="#9A9080" stroke-width="1" stroke-dasharray="5,3"/>
+        <!-- Pulley bracket dots -->
+        <circle cx="255" cy="100" r="3" fill="#9A9080"/>
+        <circle cx="290" cy="100" r="3" fill="#9A9080"/>
+        <circle cx="325" cy="100" r="3" fill="#9A9080"/>
+        <text x="297" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">PULLEY RAIL ───</text>
+
+        <!-- Storage shelf strip on right wall -->
+        <rect x="340" y="55" width="15" height="140" fill="#C8C0B0" stroke="#9A9080" stroke-width="0.5"/>
+        <!-- Shelf dividers -->
+        <line x1="340" y1="100" x2="355" y2="100" stroke="#9A9080" stroke-width="0.5"/>
+        <line x1="340" y1="145" x2="355" y2="145" stroke="#9A9080" stroke-width="0.5"/>
+
+        <!-- Zone divider wall/screen (partial, 120cm) between laundry and sitting -->
+        <rect x="238" y="55" width="4" height="120" fill="#8A8070" opacity="0.6"/>
+        <!-- Screen hatching -->
+        <g stroke="#9A9080" stroke-width="0.4" opacity="0.3">
+          <line x1="238" y1="65" x2="242" y2="65"/>
+          <line x1="238" y1="75" x2="242" y2="75"/>
+          <line x1="238" y1="85" x2="242" y2="85"/>
+          <line x1="238" y1="95" x2="242" y2="95"/>
+          <line x1="238" y1="105" x2="242" y2="105"/>
+          <line x1="238" y1="115" x2="242" y2="115"/>
+          <line x1="238" y1="125" x2="242" y2="125"/>
+          <line x1="238" y1="135" x2="242" y2="135"/>
+          <line x1="238" y1="145" x2="242" y2="145"/>
+          <line x1="238" y1="155" x2="242" y2="155"/>
+          <line x1="238" y1="165" x2="242" y2="165"/>
+        </g>
+        <text x="232" y="120" text-anchor="end" font-family="DM Mono, monospace" font-size="7" fill="#9A9080" transform="rotate(-90 232 120)">SCREEN / DIVIDER</text>
+
+        <!-- ── SITTING ZONE CONTENTS ── -->
+
+        <!-- Daybed / low sofa: 180×80cm → x=60..240, y=60..140 -->
+        <rect x="60" y="62" width="165" height="80" fill="#DDD5C5" stroke="#9A8870" stroke-width="0.8" rx="4"/>
+        <!-- Seat cushion division -->
+        <line x1="115" y1="62" x2="115" y2="142" stroke="#C8C0B0" stroke-width="1"/>
+        <line x1="170" y1="62" x2="170" y2="142" stroke="#C8C0B0" stroke-width="1"/>
+        <!-- Cushion detail -->
+        <rect x="62" y="64" width="50" height="76" fill="#E5DDD0" stroke="#C8C0B0" stroke-width="0.5" rx="2"/>
+        <rect x="117" y="64" width="50" height="76" fill="#E5DDD0" stroke="#C8C0B0" stroke-width="0.5" rx="2"/>
+        <rect x="172" y="64" width="50" height="76" fill="#E5DDD0" stroke="#C8C0B0" stroke-width="0.5" rx="2"/>
+        <!-- Back cushions (smaller rects top) -->
+        <rect x="62" y="64" width="50" height="22" fill="#D0C8B8" stroke="#C0B8A8" stroke-width="0.4" rx="1"/>
+        <rect x="117" y="64" width="50" height="22" fill="#D0C8B8" stroke="#C0B8A8" stroke-width="0.4" rx="1"/>
+        <rect x="172" y="64" width="50" height="22" fill="#D0C8B8" stroke="#C0B8A8" stroke-width="0.4" rx="1"/>
+        <text x="142" y="158" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">DAYBED / LOW SOFA</text>
+        <text x="142" y="167" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">180 × 80 cm</text>
+
+        <!-- Low coffee table: 90×45cm: x=75..165, y=200..245 -->
+        <rect x="78" y="200" width="90" height="45" fill="#C8BFB0" stroke="#9A8870" stroke-width="0.8" rx="2"/>
+        <!-- Table top grain -->
+        <rect x="80" y="202" width="86" height="41" fill="#D0C8B8" rx="1" opacity="0.5"/>
+        <text x="123" y="258" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">LOW TABLE</text>
+        <text x="123" y="267" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9080">90 × 45 cm</text>
+
+        <!-- Floor lamp (circle with stand): x=198, y=185 -->
+        <circle cx="205" cy="190" r="10" fill="#E8E4DC" stroke="#9A9080" stroke-width="0.8"/>
+        <line cx="205" cy="190" x1="205" y1="190" x2="205" y2="205" stroke="#9A9080" stroke-width="1"/>
+        <circle cx="205" cy="207" r="3" fill="#9A9080"/>
+        <text x="205" y="220" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9A9090">LAMP</text>
+
+        <!-- Plant pots in corners (circles) -->
+        <circle cx="72" cy="330" r="16" fill="#C8D8C0" stroke="#9AB090" stroke-width="0.8"/>
+        <circle cx="72" cy="330" r="10" fill="#A8C098" opacity="0.7"/>
+        <circle cx="72" cy="330" r="5" fill="#88A878" opacity="0.6"/>
+        <circle cx="210" cy="335" r="12" fill="#C8D8C0" stroke="#9AB090" stroke-width="0.8"/>
+        <circle cx="210" cy="335" r="7" fill="#A8C098" opacity="0.7"/>
+        <text x="72" y="353" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#9AB090">PLANT</text>
+
+        <!-- JOIN POINT left wall -->
+        <rect x="33" y="145" width="7" height="80" fill="#B5895A" opacity="0.85" rx="1"/>
+        <text x="29" y="200" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#B5895A"
+              transform="rotate(-90 29 185)" letter-spacing="0.08em">JOIN POINT</text>
+
+        <!-- DIMENSION LINES -->
+        <line x1="40" y1="405" x2="370" y2="405" stroke="#555550" stroke-width="0.75"/>
+        <line x1="40" y1="400" x2="40"  y2="410" stroke="#555550" stroke-width="0.75"/>
+        <line x1="370" y1="400" x2="370" y2="410" stroke="#555550" stroke-width="0.75"/>
+        <text x="205" y="420" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#555550" letter-spacing="0.08em">3,000 mm</text>
+
+        <line x1="408" y1="40"  x2="408" y2="370" stroke="#555550" stroke-width="0.75"/>
+        <line x1="403" y1="40"  x2="413" y2="40"  stroke="#555550" stroke-width="0.75"/>
+        <line x1="403" y1="370" x2="413" y2="370" stroke="#555550" stroke-width="0.75"/>
+        <text x="430" y="210" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#555550"
+              transform="rotate(90 430 205)" letter-spacing="0.08em">3,000 mm</text>
+
+        <!-- Zone labels -->
+        <text x="115" y="285" text-anchor="middle" font-family="DM Mono, monospace" font-size="8.5" fill="#9A9080" opacity="0.5" letter-spacing="0.1em">SITTING ZONE</text>
+        <text x="115" y="296" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#9A9080" opacity="0.5">~5.5 m²</text>
+        <text x="297" y="185" text-anchor="middle" font-family="DM Mono, monospace" font-size="8.5" fill="#9A9080" opacity="0.5" letter-spacing="0.1em">LAUNDRY</text>
+        <text x="297" y="196" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#9A9080" opacity="0.5">~1.8 m²</text>
+
+        <!-- BI-FOLD label -->
+        <text x="225" y="383" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#3A3A36" letter-spacing="0.08em">BI-FOLD DOOR — 240cm FULL OPEN</text>
+
+        <!-- North arrow -->
+        <g transform="translate(385,375)">
+          <circle cx="0" cy="0" r="12" fill="none" stroke="#9A9990" stroke-width="0.75"/>
+          <path d="M0,-9 L4,4 L0,1 L-4,4 Z" fill="#3A3A36"/>
+          <text x="0" y="-12" text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#3A3A36">N</text>
+          <text x="0" y="7"  text-anchor="middle" font-family="DM Mono, monospace" font-size="7" fill="#555550">S</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ══ ISOMETRIC VIEW ══
+         Same strict iso math as Module 02
+         TW=42, TH=21, H=70  (2.5m ceiling)
+         origin (215,330)
+         iso(x,z) = (215 + x*42 - z*42,  330 + x*21 + z*21)
+         height offset: h_px = h_m / 2.5 * 70
+
+         Room corners:
+           P00=(215,330)  P30=(341,393)  P03=(89,393)  P33=(215,456)
+         Ceiling (H=70):
+           C00=(215,260)  C30=(341,323)  C03=(89,323)  C33=(215,386)
+
+         Key heights:
+           Daybed h=40cm  → 11px
+           Table  h=35cm  → 10px
+           Counter h=90cm → 25px
+           Ceiling rail h=220cm → 62px
+
+         Layout in iso coords (x=right-wall side, z=back):
+         - Daybed: x=0..1.8, z=0.2..1.0  (left wall, near front)
+         - Low table: x=0.3..1.2, z=1.2..1.7
+         - Laundry corner: x=2.4..3.0, z=0..1.5 (back-right corner)
+         - Washing machine: x=2.4..3.0, z=0.2..0.8
+         - Sink: x=2.4..3.0, z=0.8..1.3
+         - Pulley rail: runs along z=0.3 from x=2.4 to x=3
+         - Bi-fold door: entire z=0 face opens → shown open (panels folded)
+         - Screen divider: x=2.4, z=0..1.5
+    ══ -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>Isometric View — 3D Visualization</span>
+        <span class="scale-badge">ISO VIEW</span>
+      </div>
+
+      <svg viewBox="0 0 470 490" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;background:linear-gradient(155deg,#F0EDE6 0%,#E4DDD2 100%);">
+        <defs>
+          <!-- ── Gradients ── -->
+          <linearGradient id="floorDeckLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C8B898"/>
+            <stop offset="100%" stop-color="#B8A888"/>
+          </linearGradient>
+          <linearGradient id="floorConcRight" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D8D0C4"/>
+            <stop offset="100%" stop-color="#C8C0B4"/>
+          </linearGradient>
+          <linearGradient id="wallBackZ" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#EEEAE2"/>
+            <stop offset="100%" stop-color="#DDD8D0"/>
+          </linearGradient>
+          <linearGradient id="wallRightX" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#E4E0D8"/>
+            <stop offset="100%" stop-color="#D4CEC6"/>
+          </linearGradient>
+          <linearGradient id="daybedTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E0D8C8"/>
+            <stop offset="100%" stop-color="#D0C8B8"/>
+          </linearGradient>
+          <linearGradient id="daybedFront" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#C8C0B0"/>
+            <stop offset="100%" stop-color="#B0A890"/>
+          </linearGradient>
+          <linearGradient id="ceilO" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F5F2EE" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#E8E4DC" stop-opacity="0.4"/>
+          </linearGradient>
+          <linearGradient id="glassPanel" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C8E0DC" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#A8C8C4" stop-opacity="0.35"/>
+          </linearGradient>
+          <!-- Deck wood lines pattern (iso) -->
+          <pattern id="deckIso" x="0" y="0" width="42" height="21" patternUnits="userSpaceOnUse"
+                   patternTransform="skewX(-26.5) scale(1,0.5)">
+            <rect width="42" height="21" fill="#C0AA88"/>
+            <line x1="0" y1="7" x2="42" y2="7" stroke="#A89870" stroke-width="0.6" opacity="0.4"/>
+            <line x1="0" y1="14" x2="42" y2="14" stroke="#D0BC9A" stroke-width="0.3" opacity="0.3"/>
+          </pattern>
+        </defs>
+
+        <!-- Ground shadow -->
+        <ellipse cx="215" cy="465" rx="145" ry="14" fill="rgba(0,0,0,0.07)"/>
+
+        <!-- ══ FLOOR ══
+             Full floor: P00,P30,P33,P03
+             Sitting zone (left ~2/3): deck texture
+             Laundry zone (right-back): concrete
+        -->
+        <!-- Full floor base -->
+        <polygon points="215,330 341,393 215,456 89,393"
+                 fill="url(#floorDeckLeft)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Deck grain lines on floor (iso parallel to z-axis, x=0..2.4) -->
+        <g stroke="#A89870" stroke-width="0.6" opacity="0.35">
+          <!-- Lines along z direction at x=0.5,1.0,1.5,2.0 on floor -->
+          <!-- x=0.5: from (0.5,0)=(236,340) to (0.5,3)=(194,403) -->
+          <line x1="236" y1="340" x2="110" y2="403"/>
+          <!-- x=1.0: (257,351) to (131,414) -->
+          <line x1="257" y1="351" x2="131" y2="414"/>
+          <!-- x=1.5: (278,361) to (152,424) -->
+          <line x1="278" y1="361" x2="152" y2="424"/>
+          <!-- x=2.0: (299,372) to (173,435) -->
+          <line x1="299" y1="372" x2="173" y2="435"/>
+        </g>
+        <!-- Laundry zone floor overlay (concrete look, right-back area x=2.4..3, z=0..1.5) -->
+        <!-- iso(2.4,0)=(316,380) iso(3,0)=(341,393) iso(3,1.5)=(257,424) iso(2.4,1.5)=(232,411) -->
+        <polygon points="316,380 341,393 257,424 232,411"
+                 fill="url(#floorConcRight)" stroke="rgba(140,130,115,0.3)" stroke-width="0.5"/>
+
+        <!-- ══ BACK WALLS ══ -->
+        <!-- Back-Z wall (z=3): P03(89,393)→P33(215,456)→C33(215,386)→C03(89,323) -->
+        <polygon points="89,393 215,456 215,386 89,323"
+                 fill="url(#wallBackZ)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Subtle horizontal lines on back wall -->
+        <g stroke="#C0BCB0" stroke-width="0.4" opacity="0.3">
+          <line x1="89" y1="360" x2="215" y2="423"/>
+          <line x1="89" y1="340" x2="215" y2="403"/>
+          <line x1="89" y1="350" x2="215" y2="413"/>
+        </g>
+
+        <!-- Back-X wall (x=3): P30(341,393)→P33(215,456)→C33(215,386)→C30(341,323) -->
+        <polygon points="341,393 215,456 215,386 341,323"
+                 fill="url(#wallRightX)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Wall lines -->
+        <g stroke="#C0BCB0" stroke-width="0.4" opacity="0.25">
+          <line x1="341" y1="370" x2="215" y2="433"/>
+          <line x1="341" y1="350" x2="215" y2="413"/>
+        </g>
+
+        <!-- ══ LAUNDRY CORNER (x=2.4..3, z=0..1.5) ══ -->
+        <!-- Partial wall / screen divider at x=2.4, z=0→1.5, full height
+             Screen: semi-transparent panel
+             iso(2.4,0)=(316,380) iso(2.4,1.5)=(232,411)
+             top: (316,310) (232,341) height H=70
+        -->
+        <polygon points="316,380 232,411 232,341 316,310"
+                 fill="rgba(200,195,185,0.45)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Screen slat lines -->
+        <g stroke="#9A9080" stroke-width="0.5" opacity="0.4">
+          <line x1="316" y1="324" x2="232" y2="355"/>
+          <line x1="316" y1="338" x2="232" y2="369"/>
+          <line x1="316" y1="352" x2="232" y2="383"/>
+          <line x1="316" y1="366" x2="232" y2="397"/>
+        </g>
+
+        <!-- WASHING MACHINE (x=2.4..3.0, z=0.2..0.8)
+             iso(2.4,0.2)=(316-8.4,380+4.2)=(308,384) at h=0
+             Top face at h=90cm=25px:
+             iso(2.4,0.2,h90)=(308,359) iso(3,0.2,h90)=(333,372) iso(3,0.8,h90)=(308,385) iso(2.4,0.8,h90)=(283,372)
+        -->
+        <!-- WM body side face (x=3 side): (3,0.2,h0)=(341,406)→(3,0.8,h0)=(316,419)→(3,0.8,h90)=(316,349)→(3,0.2,h90)=(341,336) -->
+        <polygon points="341,406 316,419 316,349 341,336"
+                 fill="#D0CCC6" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- WM body front face (z=0.2 face): (2.4,0.2,h0)=(308,384)→(3,0.2,h0)=(341,406)→(3,0.2,h90)=(341,336)→(2.4,0.2,h90)=(308,314) -->
+        <polygon points="308,384 341,406 341,336 308,314"
+                 fill="#D8D4CE" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- WM top face: -->
+        <polygon points="308,314 341,336 316,349 283,327"
+                 fill="#E0DCD6" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Porthole on front face -->
+        <ellipse cx="322" cy="362" rx="11" ry="14" fill="#C8E0DC" stroke="#8BBCAF" stroke-width="0.8" opacity="0.8"/>
+        <ellipse cx="322" cy="362" rx="7" ry="9" fill="#9AC4C0" opacity="0.5"/>
+        <!-- Control knob -->
+        <circle cx="312" cy="326" r="3" fill="#3A3A36"/>
+
+        <!-- LAUNDRY SINK (x=2.4..3.0, z=0.8..1.3)
+             At h=90cm:
+             iso(2.4,0.8,h90)=(283,327) iso(3,0.8,h90)=(308,340) iso(3,1.3,h90)=(287,351) iso(2.4,1.3,h90)=(262,338)
+             Front face z=0.8: top=(283,327)→(308,340) bottom=(283,352)→(308,365)
+             (ground: iso(2.4,0.8)=(283,397) iso(3,0.8)=(308,410))
+             Wait: iso(x,z) at ground = (215+x*42-z*42, 330+x*21+z*21)
+             iso(2.4,0.8) = (215+100.8-33.6, 330+50.4+16.8) = (282,397)
+             iso(3,0.8)   = (215+126-33.6,   330+63+16.8)   = (307,410)
+             So front face at z=0.8, h0→90:
+             top:    (282,372) to (307,385)
+             bottom: (282,397) to (307,410)
+        -->
+        <!-- Sink side (x=3 face): -->
+        <polygon points="307,385 307,410 282,423 282,398"
+                 fill="#B8B4B0" stroke="#9A9080" stroke-width="0.6"/>
+        <!-- Sink front (z=0.8 face): -->
+        <polygon points="282,372 307,385 307,410 282,397"
+                 fill="#C4C0BC" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Sink top: iso(2.4,0.8,h90)=(282,372) iso(3,0.8,h90)=(307,385) iso(3,1.3,h90)=(286,396) iso(2.4,1.3,h90)=(261,383) -->
+        <polygon points="282,372 307,385 286,396 261,383"
+                 fill="#D0CCC8" stroke="#9A9080" stroke-width="0.7"/>
+        <!-- Sink basin inset -->
+        <ellipse cx="282" cy="382" rx="12" ry="7" fill="#B8B4B0" stroke="#9A9080" stroke-width="0.5"/>
+        <!-- Faucet matte black -->
+        <line x1="280" y1="374" x2="280" y2="365" stroke="#2A2A28" stroke-width="1.8"/>
+        <line x1="276" y1="365" x2="284" y2="365" stroke="#2A2A28" stroke-width="1.8"/>
+
+        <!-- PULLEY RAIL (at h=220cm=62px above floor, x=2.4→3.0 at z=0.5)
+             iso(2.4,0.5,h220)=(315,359-62)=(299,297) iso(3,0.5,h220)=(324,310-62)=(324,248)
+             Actually iso(2.4,0.5)=(215+100.8-21,330+50.4+10.5)=(295,391)-62=(295,329)
+                      iso(3,0.5)=(215+126-21,330+63+10.5)=(320,403)-62=(320,341)
+        -->
+        <line x1="295" y1="329" x2="320" y2="341" stroke="#3A3A36" stroke-width="2"/>
+        <!-- Rail mounting brackets -->
+        <line x1="295" y1="329" x2="295" y2="339" stroke="#3A3A36" stroke-width="1"/>
+        <line x1="310" y1="336" x2="310" y2="346" stroke="#3A3A36" stroke-width="1"/>
+        <line x1="320" y1="341" x2="320" y2="351" stroke="#3A3A36" stroke-width="1"/>
+        <!-- Hanging clothes suggestion (subtle rectangles) -->
+        <rect x="297" y="339" width="5" height="18" fill="#DDD5C5" stroke="#C0B8A8" stroke-width="0.4" rx="1" opacity="0.7"/>
+        <rect x="312" y="346" width="5" height="16" fill="#E0D8CC" stroke="#C0B8A8" stroke-width="0.4" rx="1" opacity="0.7"/>
+
+        <!-- ══ SITTING ZONE OBJECTS ══ -->
+        <!-- DAYBED (x=0.1..1.8, z=0.2..1.0)
+             h=40cm = 11px
+             Ground iso:
+             iso(0.1,0.2)=(215+4.2-8.4,330+2.1+4.2)=(211,336)
+             iso(1.8,0.2)=(215+75.6-8.4,330+37.8+4.2)=(282,372)
+             iso(1.8,1.0)=(215+75.6-42,330+37.8+21)=(249,389)
+             iso(0.1,1.0)=(215+4.2-42,330+2.1+21)=(177,353)
+             Top face at h=40 (11px up):
+             (211,325) (282,361) (249,378) (177,342)
+        -->
+        <!-- Daybed side face (z=0.2): top(211,325)→(282,361) bottom(211,336)→(282,372) -->
+        <polygon points="211,325 282,361 282,372 211,336"
+                 fill="url(#daybedFront)" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Daybed right face (x=1.8): top(282,361)→(249,378) bottom(282,372)→(249,389) -->
+        <polygon points="282,361 249,378 249,389 282,372"
+                 fill="#B8B0A0" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Daybed top face -->
+        <polygon points="211,325 282,361 249,378 177,342"
+                 fill="url(#daybedTop)" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Cushion dividers on top -->
+        <line x1="234" y1="331" x2="268" y2="363" stroke="#C8C0B0" stroke-width="0.7"/>
+        <line x1="222" y1="334" x2="256" y2="366" stroke="#C8C0B0" stroke-width="0.7"/>
+        <!-- Back cushion blocks on daybed -->
+        <polygon points="211,325 248,306 282,339 249,357" fill="#D8D0C0" stroke="#C0B8A8" stroke-width="0.5" opacity="0.8"/>
+        <!-- Scatter pillows (small parallelograms) -->
+        <polygon points="220,315 232,309 238,316 226,322" fill="#C8C0B0" stroke="#B0A898" stroke-width="0.5"/>
+        <polygon points="240,306 254,300 259,308 245,314" fill="#D0C8B8" stroke="#B8B0A0" stroke-width="0.5"/>
+
+        <!-- LOW TABLE (x=0.3..1.2, z=1.3..1.8)
+             h=35cm = 10px
+             iso(0.3,1.3)=(215+12.6-54.6,330+6.3+27.3)=(173,364)
+             iso(1.2,1.3)=(215+50.4-54.6,330+25.2+27.3)=(211,382)
+             iso(1.2,1.8)=(215+50.4-75.6,330+25.2+37.8)=(190,393)
+             iso(0.3,1.8)=(215+12.6-75.6,330+6.3+37.8)=(152,374)
+             Top at h=35(10px up):
+             (173,354)(211,372)(190,383)(152,364)
+        -->
+        <!-- Table side face z=1.3: top(173,354)→(211,372) bottom(173,364)→(211,382) -->
+        <polygon points="173,354 211,372 211,382 173,364"
+                 fill="#C0B8A8" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Table right face x=1.2: -->
+        <polygon points="211,372 190,383 190,393 211,382"
+                 fill="#B0A898" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Table top: -->
+        <polygon points="173,354 211,372 190,383 152,364"
+                 fill="#D0C8B8" stroke="#9A8870" stroke-width="0.7"/>
+        <!-- Tea cup on table -->
+        <ellipse cx="183" cy="369" rx="5" ry="3" fill="#E8E4DC" stroke="#9A9080" stroke-width="0.5"/>
+        <ellipse cx="196" cy="374" rx="4" ry="2.5" fill="#E8E4DC" stroke="#9A9080" stroke-width="0.5"/>
+
+        <!-- PLANT POTS (in sitting zone corners) -->
+        <!-- Plant near back-z wall x=0.3, z=2.6
+             iso(0.3,2.6)=(215+12.6-109.2,330+6.3+54.6)=(118,391) at h=0
+             Pot cylinder, h=40cm=11px
+        -->
+        <ellipse cx="118" cy="380" rx="11" ry="6" fill="#A8B898" stroke="#889878" stroke-width="0.7"/>
+        <polygon points="107,391 129,391 127,380 109,380" fill="#98A888" stroke="#889878" stroke-width="0.5"/>
+        <ellipse cx="118" cy="391" rx="11" ry="6" fill="#88A878" stroke="#889878" stroke-width="0.5"/>
+        <!-- Plant leaves (simple lines) -->
+        <line x1="118" y1="380" x2="108" y2="365" stroke="#6A9858" stroke-width="1.5"/>
+        <line x1="118" y1="380" x2="125" y2="363" stroke="#6A9858" stroke-width="1.5"/>
+        <line x1="118" y1="380" x2="112" y2="360" stroke="#6A9858" stroke-width="1.2"/>
+        <ellipse cx="108" cy="364" rx="6" ry="4" fill="#7AB868" opacity="0.7"/>
+        <ellipse cx="125" cy="362" rx="7" ry="4" fill="#6AA858" opacity="0.7"/>
+
+        <!-- ══ BI-FOLD DOOR (z=0 face — front wall with large opening) ══
+             The front-right face shows the bi-fold door
+             Wall at z=0: P00(215,330)→P30(341,393)→C30(341,323)→C00(215,260)
+             Opening is the center ~80% of the wall (x=0.2..2.8)
+             Solid sections remain at x=0..0.2 and x=2.8..3
+             
+             Bi-fold panels shown as 4 accordion panels, folded back against wall edges
+             Glass panels: semi-transparent fill with frame lines
+        -->
+        <!-- Solid wall left (x=0..0.2) -->
+        <!-- iso(0.2,0)=(215+8.4,330+4.2)=(223,334) -->
+        <polygon points="215,330 223,334 223,264 215,260"
+                 fill="rgba(240,236,228,0.95)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Solid wall right (x=2.8..3) -->
+        <!-- iso(2.8,0)=(215+117.6,330+58.8)=(333,389) -->
+        <polygon points="333,389 341,393 341,323 333,319"
+                 fill="rgba(240,236,228,0.92)" stroke="#9A9080" stroke-width="0.8"/>
+
+        <!-- Bi-fold opening — glass panels folded back (shown at slight angle from wall) -->
+        <!-- Left folded pair (x=0.2..1.0 and x=1.0..1.5) folded back toward z=0.15 -->
+        <!-- Panel 1 (x=0.2..1.0 folded to z=0..0.15):
+             Front pos: (223,334)→(257,351)
+             Folded back edge: z=0.15 → iso(0.2,0.15)=(223-6.3,334+3.15)=(217,337) iso(1.0,0.15)=(251,357)
+             Showing as semi-transparent parallelogram -->
+        <polygon points="223,264 257,281 257,351 223,334"
+                 fill="url(#glassPanel)" stroke="#4A6065" stroke-width="1"/>
+        <!-- Frame lines on panel -->
+        <line x1="240" y1="272" x2="240" y2="342" stroke="#3A5058" stroke-width="0.8"/>
+        <!-- Glass reflection -->
+        <polygon points="225,266 235,271 235,340 225,335" fill="rgba(255,255,255,0.15)" stroke="none"/>
+
+        <!-- Panel 2 -->
+        <polygon points="257,281 299,302 299,372 257,351"
+                 fill="url(#glassPanel)" stroke="#4A6065" stroke-width="1"/>
+        <line x1="278" y1="291" x2="278" y2="361" stroke="#3A5058" stroke-width="0.8"/>
+        <polygon points="259,283 269,288 269,357 259,352" fill="rgba(255,255,255,0.12)" stroke="none"/>
+
+        <!-- Panel 3 -->
+        <polygon points="299,302 333,319 333,389 299,372"
+                 fill="url(#glassPanel)" stroke="#4A6065" stroke-width="1"/>
+        <line x1="316" y1="310" x2="316" y2="380" stroke="#3A5058" stroke-width="0.8"/>
+        <polygon points="301,304 311,309 311,378 301,373" fill="rgba(255,255,255,0.10)" stroke="none"/>
+
+        <!-- Garden floor (visible through open door, outside room) -->
+        <!-- Outside floor: below z=0, a patch of green -->
+        <polygon points="215,330 341,393 360,410 195,360"
+                 fill="#C8D4B8" stroke="none" opacity="0.5"/>
+        <!-- Grass texture lines -->
+        <g stroke="#A8B898" stroke-width="0.5" opacity="0.4">
+          <line x1="220" y1="348" x2="240" y2="355"/>
+          <line x1="250" y1="362" x2="270" y2="369"/>
+          <line x1="285" y1="378" x2="305" y2="385"/>
+        </g>
+
+        <!-- ══ NEAR WALLS ══ -->
+        <!-- Left wall (x=0): P00(215,330)→P03(89,393)→C03(89,323)→C00(215,260) -->
+        <!-- The door opening is on z=0 (front), not x=0. x=0 is the solid left wall. -->
+        <polygon points="215,330 89,393 89,323 215,260"
+                 fill="rgba(235,230,222,0.92)" stroke="#9A9080" stroke-width="0.8"/>
+        <!-- Subtle vertical plank suggestion on left wall -->
+        <g stroke="#C8C4BC" stroke-width="0.4" opacity="0.3">
+          <line x1="215" y1="285" x2="89" y2="348"/>
+          <line x1="205" y1="281" x2="121" y2="320"/>
+          <line x1="175" y1="270" x2="113" y2="300"/>
+        </g>
+
+        <!-- ══ CEILING ══ -->
+        <polygon points="215,260 341,323 215,386 89,323"
+                 fill="url(#ceilO)" stroke="rgba(154,144,128,0.35)" stroke-width="0.6" opacity="0.55"/>
+
+        <!-- ══ CALLOUT LABELS ══ -->
+        <!-- Daybed -->
+        <line x1="211" y1="350" x2="155" y2="310" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="100" y="308" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">DAYBED</text>
+
+        <!-- Table -->
+        <line x1="178" y1="370" x2="120" y2="395" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="35" y="398" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">LOW TABLE</text>
+
+        <!-- WM -->
+        <line x1="323" y1="355" x2="395" y2="315" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="397" y="313" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">WASHING MACHINE</text>
+
+        <!-- Sink -->
+        <line x1="284" y1="386" x2="395" y2="380" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="397" y="383" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">LAUNDRY SINK</text>
+
+        <!-- Rail -->
+        <line x1="308" y1="338" x2="395" y2="345" stroke="#9A9990" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="397" y="348" font-family="DM Mono, monospace" font-size="7.5" fill="#555550">PULLEY RAIL</text>
+
+        <!-- Bi-fold -->
+        <line x1="278" y1="330" x2="278" y2="280" stroke="#4A6065" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="278" y="275" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="#4A7870">BI-FOLD GLASS DOOR</text>
+
+        <!-- Join point -->
+        <rect x="85" y="373" width="5" height="50" fill="#B5895A" opacity="0.8" rx="1"/>
+
+        <!-- Title -->
+        <text x="215" y="20" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="#9A9990" letter-spacing="0.14em">ISOMETRIC VIEW — MODULE 03 / OUTDOOR LIVING</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- SPECS -->
+  <div class="specs-grid">
+    <div class="spec-block">
+      <h3>Module Size</h3>
+      <div class="spec-row"><span class="spec-key">Width</span><span class="spec-val">3,000 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Depth</span><span class="spec-val">3,000 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Ceiling Height</span><span class="spec-val">2,500 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Bi-Fold Opening</span><span class="spec-val">2,400 mm</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Furniture &amp; Equipment</h3>
+      <div class="spec-row"><span class="spec-key">Daybed / low sofa</span><span class="spec-val">1,800 × 800</span></div>
+      <div class="spec-row"><span class="spec-key">Low coffee table</span><span class="spec-val">900 × 450</span></div>
+      <div class="spec-row"><span class="spec-key">Washing machine</span><span class="spec-val">600 × 600</span></div>
+      <div class="spec-row"><span class="spec-key">Laundry sink</span><span class="spec-val">500 × 400</span></div>
+      <div class="spec-row"><span class="spec-key">Pulley drying rail</span><span class="spec-val">1,500 mm</span></div>
+      <div class="spec-row"><span class="spec-key">Bi-fold door panels</span><span class="spec-val">4 × 600 mm</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Zones</h3>
+      <div class="spec-row"><span class="spec-key">Sitting / outdoor zone</span><span class="spec-val">~5.5 m²</span></div>
+      <div class="spec-row"><span class="spec-key">Laundry zone</span><span class="spec-val">~1.8 m²</span></div>
+      <div class="spec-row"><span class="spec-key">Circulation</span><span class="spec-val">~1.7 m²</span></div>
+      <h3 style="margin-top:14px">Brand Reference</h3>
+      <div class="spec-row"><span class="spec-key">Bi-fold door</span><span class="spec-val">TOSTEM / Kawneer</span></div>
+      <div class="spec-row"><span class="spec-key">Washing machine</span><span class="spec-val">Samsung / LG</span></div>
+      <div class="spec-row"><span class="spec-key">Sink + Faucet</span><span class="spec-val">Cotto / Grohe</span></div>
+    </div>
+    <div class="spec-block">
+      <h3>Materials Palette</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:linear-gradient(180deg,#C8B898,#B8A888);border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">COMPOSITE<br>DECK</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#E0D8CE;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">CONCRETE<br>TILE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:rgba(200,224,220,0.7);border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">GLASS<br>BI-FOLD</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#DDD5C5;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">LINEN<br>CUSHION</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;background:#2A2A28;border:1px solid rgba(0,0,0,0.1)"></div>
+          <span style="font-family:DM Mono,monospace;font-size:7px;color:#9A9990;text-align:center">MATTE<br>BLACK</span>
+        </div>
+      </div>
+      <span class="chip dark">Matte Black</span>
+      <span class="chip">Composite Deck</span>
+      <span class="chip">Tempered Glass</span>
+      <span class="chip">Linen Fabric</span>
+    </div>
+
+    <div class="legend">
+      <h3>Legend</h3>
+      <div class="legend-items">
+        <div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(90deg,#C8B898,#B8A888)"></div>Composite deck floor (sitting zone)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#E0D8CE"></div>Concrete tile floor (laundry zone)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(200,224,220,0.7)"></div>Bi-fold glass door (aluminium frame)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#DDD5C5"></div>Daybed / cushion seating</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:rgba(200,195,185,0.45)"></div>Screen / divider (laundry partition)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#3A3A36"></div>Structural wall</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#B5895A"></div>Module Join Point (to Nordic)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#C8D4B8"></div>Garden / outdoor (beyond bi-fold)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>FrameFAST</span>
+    <span>Module-03 / Outdoor Living / Floor Plan + Isometric View</span>
+    <span>Rev.01 — Feb 2026</span>
+  </div>
+</div>
+</body>
+</html>
